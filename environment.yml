@@ -1,4 +1,3 @@
-name: conda-tui
 channels:
   - defaults
 dependencies:
@@ -24,4 +23,3 @@ dependencies:
     - pygments==2.10.0
     - rich==10.11.0
     - textual==0.1.12
-prefix: /opt/anaconda3/envs/conda-tui
