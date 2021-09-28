@@ -1,0 +1,15 @@
+# Compiled/bytecode output
+*.pyc
+__pycache__
+
+# OS stuff
+.DS_Store
+*.swp
+
+# IDE settings
+.idea/
+.vscode/
+
+# Log files
+*.log
+
