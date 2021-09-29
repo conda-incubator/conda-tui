@@ -1,7 +1,10 @@
+from pathlib import Path
+
 from rich.text import Text
 from textual.app import App
-from textual.widgets import ScrollView, Header, Footer
-from pathlib import Path
+from textual.widgets import Footer
+from textual.widgets import Header
+from textual.widgets import ScrollView
 
 HERE = Path(__file__).parent
 
