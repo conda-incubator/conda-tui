@@ -12,9 +12,9 @@ from textual.widgets import ScrollView
 from textual.widgets import TreeControl
 from textual.widgets import TreeNode
 
-from conda_tui.package import list_packages_for_environment
 from conda_tui.environment import Environment
 from conda_tui.environment import get_envs
+from conda_tui.package import list_packages_for_environment
 
 HERE = Path(__file__).parent
 
