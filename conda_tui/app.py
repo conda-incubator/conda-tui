@@ -1,13 +1,17 @@
 from pathlib import Path
 
-from rich.table import Table
+from rich.console import RenderableType
 from rich.text import Text
 from textual.app import App
+from textual.events import Mount
 from textual.widgets import Footer
 from textual.widgets import Header
 from textual.widgets import ScrollView
+from textual.widgets import TreeControl
+from textual.widgets import TreeNode
 
-from conda_tui.environment import list_environments
+from conda_tui.environment import Environment
+from conda_tui.environment import get_envs
 
 HERE = Path(__file__).parent
 
@@ -27,6 +31,36 @@ def get_logo() -> str:
 
     logo_text = "\n".join(padded_lines)
     return logo_text
+
+
+class EnvironmentTree(TreeControl[Environment]):
+    def __init__(self) -> None:
+        super().__init__("envs", data=Environment())
+
+    def render_node(self, node: TreeNode[Environment]) -> RenderableType:
+        if not isinstance(node.label, str):
+            label = node.label
+        else:
+            label = Text(
+                # if path is defined get a pretty name
+                (
+                    node.data.rpath
+                    if node.id == self.hover_node
+                    else node.data.name or node.data.rpath
+                )
+                # if no path just reuse label
+                or node.label,
+                no_wrap=True,
+            )
+        if node.id == self.hover_node:
+            label.stylize("bold")
+        label.apply_meta({"@click": f"click_label({node.id})", "tree_node": node.id})
+        return label
+
+    async def on_mount(self, event: Mount) -> None:
+        for env in get_envs():
+            await self.add(self.root.id, env.name or env.path, env)
+        await self.root.expand()
 
 
 class CondaTUI(App):
@@ -60,11 +94,7 @@ class CondaTUI(App):
             footer="left-start|right-end,footer",
         )
 
-        table = Table("Name", "Path", title="Environments")
-        for env in list_environments():
-            table.add_row(env.name, env.path)
-
-        environment_list = ScrollView(table)
+        environment_list = EnvironmentTree()
 
         # Display the package list
         # TODO: Should toggle between logo and list when environment is selected

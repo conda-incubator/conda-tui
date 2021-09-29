@@ -2,7 +2,10 @@ from dataclasses import dataclass
 from functools import lru_cache
 from os.path import basename
 from os.path import dirname
+from os.path import expanduser
+from os.path import relpath
 from typing import List
+from typing import Optional
 
 from conda.base.constants import ROOT_ENV_NAME
 from conda.base.context import context
@@ -12,15 +15,24 @@ from conda.core.envs_manager import list_all_known_prefixes
 
 @dataclass
 class Environment:
-    path: str
+    path: Optional[str] = None
 
     @property
-    def name(self) -> str:
-        try:
-            return self.__name
-        except AttributeError:
-            self.__name: str = self.get_name(self.path)
-            return self.__name
+    def rpath(self) -> Optional[str]:
+        if self.path is None:
+            return None
+        return self.get_relative(self.path)
+
+    @staticmethod
+    @lru_cache
+    def get_relative(prefix: str) -> str:
+        return relpath(prefix, expanduser("~"))
+
+    @property
+    def name(self) -> Optional[str]:
+        if self.path is None:
+            return None
+        return self.get_name(self.path)
 
     @staticmethod
     @lru_cache
@@ -34,10 +46,7 @@ class Environment:
         return ""
 
 
-get_envs = list_all_known_prefixes
-
-
-def list_environments() -> List[Environment]:
+def get_envs() -> List[Environment]:
     """Get a list of conda environments installed on local machine."""
 
-    return [Environment(env) for env in get_envs()]
+    return [Environment(env) for env in list_all_known_prefixes()]
