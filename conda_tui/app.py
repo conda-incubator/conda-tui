@@ -11,9 +11,22 @@ from conda_tui.environment import list_environments
 
 HERE = Path(__file__).parent
 
-# Load the text for the ASCII art, ensure all lines same length
-with Path(HERE, "resources", "ascii-logo-80.txt").open("r") as fp:
-    LOGO_TEXT = fp.read()
+
+def get_logo() -> str:
+    """Load the text for the ASCII art.
+
+    Ensure all lines same length and beginning with blank non-whitespace character.
+
+    """
+    with Path(HERE, "resources", "ascii-logo-80.txt").open("r") as fp:
+        lines = [line.rstrip() for line in fp.readlines()]
+
+    max_line_length = max(len(line) for line in lines)
+    blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
+    padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
+
+    logo_text = "\n".join(padded_lines)
+    return logo_text
 
 
 class CondaTUI(App):
@@ -55,7 +68,7 @@ class CondaTUI(App):
 
         # Display the package list
         # TODO: Should toggle between logo and list when environment is selected
-        text = Text(LOGO_TEXT, style="green", justify="left")
+        text = Text(get_logo(), style="green", justify="center")
         package_list = ScrollView(text)
 
         grid.place(
