@@ -1,13 +1,10 @@
 from os.path import basename
 from os.path import dirname
-from typing import Any
-from typing import Dict
 
 from conda.base.constants import ROOT_ENV_NAME
 from conda.base.context import context
 from conda.common.path import paths_equal
 from conda.core.envs_manager import list_all_known_prefixes
-from rich import print
 
 
 def get_name(prefix: str) -> str:
@@ -18,7 +15,17 @@ def get_name(prefix: str) -> str:
     return ""
 
 
-envs: Dict[str, Any] = {}
-for p in list_all_known_prefixes():
-    envs.setdefault(get_name(p), []).append(p)
-print(envs)
+get_envs = list_all_known_prefixes
+
+
+if __name__ == "__main__":
+    from rich import print
+    from rich.table import Table
+
+    tbl = Table(title="envs")
+    tbl.add_column("Name")
+    tbl.add_column("Path")
+    for env in get_envs():
+        tbl.add_row(get_name(env), env)
+
+    print(tbl)
