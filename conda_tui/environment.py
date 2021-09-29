@@ -10,7 +10,7 @@ from typing import Optional
 from conda.base.constants import ROOT_ENV_NAME
 from conda.base.context import context
 from conda.common.path import paths_equal
-from conda.core.envs_manager import list_all_known_prefixes
+from conda.core.envs_manager import list_all_known_prefixes as list_prefixes
 
 
 @dataclass
@@ -46,7 +46,7 @@ class Environment:
         return ""
 
 
-def get_envs() -> List[Environment]:
+def list_environments() -> List[Environment]:
     """Get a list of conda environments installed on local machine."""
 
-    return [Environment(env) for env in list_all_known_prefixes()]
+    return [Environment(env) for env in list_prefixes()]

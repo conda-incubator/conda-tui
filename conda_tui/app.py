@@ -1,4 +1,4 @@
-import functools
+from functools import lru_cache
 from pathlib import Path
 
 from rich.console import RenderableType
@@ -6,20 +6,22 @@ from rich.table import Table
 from rich.text import Text
 from textual.app import App
 from textual.events import Mount
+from textual.reactive import Reactive
 from textual.widgets import Footer
 from textual.widgets import Header
 from textual.widgets import ScrollView
+from textual.widgets import TreeClick
 from textual.widgets import TreeControl
 from textual.widgets import TreeNode
 
 from conda_tui.environment import Environment
-from conda_tui.environment import get_envs
+from conda_tui.environment import list_environments
 from conda_tui.package import list_packages_for_environment
 
 HERE = Path(__file__).parent
 
 
-@functools.lru_cache()
+@lru_cache()
 def get_logo() -> Text:
     """Load the text for the ASCII art.
 
@@ -38,31 +40,68 @@ def get_logo() -> Text:
 
 
 class EnvironmentTree(TreeControl[Environment]):
+    has_focus = Reactive(False)
+
     def __init__(self) -> None:
         super().__init__("envs", data=Environment())
 
+    def on_focus(self) -> None:
+        self.has_focus = True
+
+    def on_blur(self) -> None:
+        self.has_focus = False
+
     def render_node(self, node: TreeNode[Environment]) -> RenderableType:
+        return self.render_label(
+            node,
+            node.expanded,
+            node.is_cursor,
+            node.id == self.hover_node,
+            self.has_focus,
+        )
+
+    @lru_cache
+    def render_label(
+        self,
+        node: TreeNode[Environment],
+        expanded: bool,
+        is_cursor: bool,
+        is_hover: bool,
+        has_focus: bool,
+    ) -> RenderableType:
+        meta = {
+            "@click": f"click_label({node.id})",
+            "tree_node": node.id,
+            "cursor": node.is_cursor,
+        }
+
         if not isinstance(node.label, str):
             label = node.label
         else:
             label = Text(
                 # if path is defined get a pretty name
-                (
-                    node.data.rpath
-                    if node.id == self.hover_node
-                    else node.data.name or node.data.rpath
-                )
+                (node.data.rpath if is_hover else node.data.name or node.data.rpath)
                 # if no path just reuse label
                 or node.label,
                 no_wrap=True,
             )
-        if node.id == self.hover_node:
+
+        if is_hover:
             label.stylize("bold")
-        label.apply_meta({"@click": f"click_label({node.id})", "tree_node": node.id})
-        return label
+
+        icon_label = (
+            Text(
+                "\u25cf" if expanded else "\u25cb",
+                no_wrap=True,
+            )
+            + " "
+            + label
+        )
+        icon_label.apply_meta(meta)
+        return icon_label
 
     async def on_mount(self, event: Mount) -> None:
-        for env in get_envs():
+        for env in list_environments():
             await self.add(self.root.id, env.name or env.path, env)
         await self.root.expand()
 
@@ -102,36 +141,42 @@ class CondaTUI(App):
             footer="left-start|right-end,footer",
         )
 
-        environment_list = EnvironmentTree()
-
         # Display the logo in the package list pane
         self.package_list = ScrollView(get_logo())
 
         grid.place(
             header=Header(),
-            env_list=environment_list,
+            env_list=EnvironmentTree(),
             package_list=self.package_list,
             footer=Footer(),
         )
 
-    async def action_package_view(self, which: str) -> None:
-        """Handle key press events."""
-        if which == "home":
-            content = get_logo()
-        elif which == "package":
-            content = Table(
-                "Name", "Type", "Description", "Version", title="Packages", expand=True
-            )
-            for pkg in list_packages_for_environment(Environment(path="path")):
-                content.add_row(
-                    Text(pkg.name),
-                    Text(pkg.type.value),
-                    Text(pkg.description),
-                    Text(pkg.version),
-                )
-        else:
-            raise ValueError(f"Unknown key: {which}")
+    async def handle_tree_click(self, message: TreeClick[Environment]) -> None:
+        if not message.node.data.path:
+            return
 
+        # if not message.node.loaded:
+        await self.load_packages(message.node)
+        await message.node.expand()
+
+    async def load_packages(self, node: TreeNode[Environment]) -> None:
+        content = Table(
+            "Name",
+            "Version",
+            "Build",
+            "Features",
+            "Channel",
+            title="Packages",
+            expand=True,
+        )
+        for pkg in list_packages_for_environment(node.data):
+            content.add_row(
+                pkg.name,
+                pkg.version,
+                pkg.build,
+                ", ".join(pkg.get("features", ())),
+                pkg.schannel,
+            )
         await self.package_list.update(content)
 
 

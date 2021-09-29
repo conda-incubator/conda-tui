@@ -15,7 +15,7 @@ def get_name(prefix: str) -> str:
     return ""
 
 
-get_envs = list_all_known_prefixes
+list_environments = list_all_known_prefixes
 
 
 if __name__ == "__main__":
@@ -25,7 +25,7 @@ if __name__ == "__main__":
     tbl = Table(title="envs")
     tbl.add_column("Name")
     tbl.add_column("Path")
-    for env in get_envs():
+    for env in list_environments():
         tbl.add_row(get_name(env), env)
 
     print(tbl)
