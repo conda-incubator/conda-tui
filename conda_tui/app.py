@@ -1,6 +1,8 @@
+import functools
 from pathlib import Path
 
 from rich.console import RenderableType
+from rich.table import Table
 from rich.text import Text
 from textual.app import App
 from textual.events import Mount
@@ -10,13 +12,15 @@ from textual.widgets import ScrollView
 from textual.widgets import TreeControl
 from textual.widgets import TreeNode
 
+from conda_tui.package import list_packages_for_environment
 from conda_tui.environment import Environment
 from conda_tui.environment import get_envs
 
 HERE = Path(__file__).parent
 
 
-def get_logo() -> str:
+@functools.lru_cache()
+def get_logo() -> Text:
     """Load the text for the ASCII art.
 
     Ensure all lines same length and beginning with blank non-whitespace character.
@@ -29,7 +33,7 @@ def get_logo() -> str:
     blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
     padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
 
-    logo_text = "\n".join(padded_lines)
+    logo_text = Text("\n".join(padded_lines), style="green", justify="center")
     return logo_text
 
 
@@ -66,10 +70,14 @@ class EnvironmentTree(TreeControl[Environment]):
 class CondaTUI(App):
     """A hacked-together Conda Text User Interface (TUI)."""
 
+    package_list: ScrollView
+
     async def on_load(self) -> None:
         """Sent before going in to application mode."""
 
         # Bind our basic keys
+        await self.bind("h", "package_view('home')", "Home")
+        await self.bind("p", "package_view('package')", "Package View")
         await self.bind("q", "quit", "Quit")
 
     async def on_mount(self) -> None:
@@ -96,17 +104,35 @@ class CondaTUI(App):
 
         environment_list = EnvironmentTree()
 
-        # Display the package list
-        # TODO: Should toggle between logo and list when environment is selected
-        text = Text(get_logo(), style="green", justify="center")
-        package_list = ScrollView(text)
+        # Display the logo in the package list pane
+        self.package_list = ScrollView(get_logo())
 
         grid.place(
             header=Header(),
             env_list=environment_list,
-            package_list=package_list,
+            package_list=self.package_list,
             footer=Footer(),
         )
+
+    async def action_package_view(self, which: str) -> None:
+        """Handle key press events."""
+        if which == "home":
+            content = get_logo()
+        elif which == "package":
+            content = Table(
+                "Name", "Type", "Description", "Version", title="Packages", expand=True
+            )
+            for pkg in list_packages_for_environment(Environment(path="path")):
+                content.add_row(
+                    Text(pkg.name),
+                    Text(pkg.type.value),
+                    Text(pkg.description),
+                    Text(pkg.version),
+                )
+        else:
+            raise ValueError(f"Unknown key: {which}")
+
+        await self.package_list.update(content)
 
 
 def run() -> None:
