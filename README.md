@@ -17,8 +17,8 @@ python app.py
 
 # Code quality
 
-I've included some simple config for code formatting using `pre-commit`.
+I've included some simple config for code formatting using [`pre-commit`](https://pre-commit.com/).
 
-* Formatting with `black`
-* Linting with `flake8`
-* Type checking with `mypy`
+* Formatting with [`black`](https://black.readthedocs.io)
+* Linting with [`flake8`](https://flake8.pycqa.org)
+* Type checking with [`mypy`](https://mypy.readthedocs.io)
