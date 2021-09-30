@@ -173,9 +173,8 @@ class CondaTUI(App):
         """Sent before going in to application mode."""
 
         # Bind our basic keys
-        await self.bind("h", "package_view('home')", "Home")
-        await self.bind("p", "package_view('package')", "Package View")
-        await self.bind("q", "quit", "Quit")
+        await self.bind("h,H", "display_logo()", "Home")
+        await self.bind("q,Q", "quit", "Quit")
 
     async def on_mount(self) -> None:
         """Call after terminal goes in to application mode"""
@@ -216,6 +215,10 @@ class CondaTUI(App):
         # if not message.node.loaded:
         await self.load_packages(message.node)
         await message.node.expand()
+
+    async def action_display_logo(self) -> None:
+        """Display the logo when "H" is pressed."""
+        await self.package_list.update(get_logo())
 
     async def load_packages(self, node: TreeNode[Environment]) -> None:
         packages = list_packages_for_environment(node.data)
