@@ -9,6 +9,7 @@ from textual import events
 from textual.reactive import Reactive
 from textual.widget import Widget
 
+from conda_tui.environment import Environment
 from conda_tui.package import Package
 
 
@@ -17,8 +18,9 @@ class PackageTableWidget(Widget):
 
     hover_row = Reactive(None)
 
-    def __init__(self, data: List[Package], *, name: str = None):
+    def __init__(self, env: Environment, data: List[Package], *, name: str = None):
         super().__init__(name=name)
+        self._env = env
         self._data = data
 
     def render(self) -> RenderableType:
@@ -31,7 +33,7 @@ class PackageTableWidget(Widget):
             "Version",
             "Build",
             "Channel",
-            title="Packages",
+            title=self._env.title,
             expand=True,
         )
         for row_num, pkg in enumerate(self._data):

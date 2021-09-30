@@ -45,6 +45,19 @@ class Environment:
             return basename(prefix)
         return ""
 
+    @property
+    def title(self) -> Optional[str]:
+        if self.path is None:
+            return None
+        return self.get_title(self.path, self.name)
+
+    @staticmethod
+    @lru_cache
+    def get_title(prefix: str, name: Optional[str]) -> str:
+        if name:
+            return f"{name} ({prefix})"
+        return prefix
+
     def __hash__(self) -> int:
         return hash(self.path)
 

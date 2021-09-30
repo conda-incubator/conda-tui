@@ -148,7 +148,7 @@ class CondaTUI(App):
     async def show_package_table(self, node: TreeNode[Environment]) -> None:
         """Update the package list table based on selected environment."""
         packages = list_packages_for_environment(node.data)
-        await self.package_list.update(PackageTableWidget(packages))
+        await self.package_list.update(PackageTableWidget(node.data, packages))
 
 
 def run() -> None:
