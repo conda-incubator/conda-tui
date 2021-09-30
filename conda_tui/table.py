@@ -39,7 +39,7 @@ class PackageTableWidget(Widget):
         for row_num, pkg in enumerate(self._data):
             style: Optional[Style] = None
             if self.hover_row == row_num:
-                style = Style(bgcolor="white", bold=True)
+                style = Style(reverse=True, bold=True)
 
             texts = {
                 "name": Text(pkg.name),
