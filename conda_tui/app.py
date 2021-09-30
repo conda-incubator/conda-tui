@@ -1,3 +1,4 @@
+import json
 from functools import lru_cache
 from pathlib import Path
 from typing import List
@@ -124,6 +125,7 @@ class PackageTableControl(Widget):
         self.log("Rendering table")
         table = Table(
             "Name",
+            "Description",
             "Version",
             "Build",
             "Features",
@@ -135,8 +137,13 @@ class PackageTableControl(Widget):
             style = ""
             if self.hover_row == row_num:
                 style = "bold red"
+
+            with Path(pkg.extracted_package_dir, "info", "about.json").open("r") as fh:
+                description = json.load(fh).get("summary", "")
+
             texts = {
                 "name": Text(pkg.name, style=style),
+                "description": Text(description, style=style),
                 "version": Text(pkg.version, style=style),
                 "build": Text(pkg.build, style=style),
                 "features": Text(", ".join(pkg.get("features", ())), style=style),
