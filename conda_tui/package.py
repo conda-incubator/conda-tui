@@ -1,4 +1,6 @@
+import json
 import random
+from pathlib import Path
 from typing import Any
 from typing import List
 
@@ -23,6 +25,16 @@ class Package:
         if random.random() > 0.8:
             return "[blue]\u2B06[/blue] Upgrade to version [red]X.Y.Z[/red]"
         return "Up-to-date"
+
+    @property
+    def description(self) -> str:
+        """Attempt to load the package description."""
+        try:
+            package_dir = self.extracted_package_dir
+        except AttributeError:
+            return ""
+        with Path(package_dir, "info", "about.json").open("r") as fh:
+            return json.load(fh).get("summary", "")
 
 
 def list_packages_for_environment(env: Environment) -> List[Package]:

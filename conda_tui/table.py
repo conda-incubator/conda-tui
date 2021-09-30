@@ -1,5 +1,3 @@
-import json
-from pathlib import Path
 from typing import List
 from typing import Optional
 
@@ -43,12 +41,9 @@ class PackageTableWidget(Widget):
             if self.hover_row == row_num:
                 style = Style(bgcolor="white", bold=True)
 
-            with Path(pkg.extracted_package_dir, "info", "about.json").open("r") as fh:
-                description = json.load(fh).get("summary", "")
-
             texts = {
                 "name": Text(pkg.name),
-                "description": Text(description),
+                "description": Text(pkg.description),
                 "version": Text(pkg.version),
                 "build": Text(pkg.build),
                 # "features": Text(", ".join(pkg.get("features", ()))),
