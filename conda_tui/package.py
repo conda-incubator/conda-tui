@@ -31,8 +31,8 @@ class Package:
     def get_status(can_update: bool) -> str:
         # TODO: Replace with real status
         if can_update:
-            return "[blue]\u2B06[/blue] Upgrade to version [red]X.Y.Z[/red]"
-        return "Up-to-date"
+            return "[blue]\u2b06[/blue] Upgrade to version [red]X.Y.Z[/red]"
+        return "[green]\u2714[/green] Up-to-date"
 
     def update(self) -> None:
         # TODO: do update here
