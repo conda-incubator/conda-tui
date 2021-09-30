@@ -173,8 +173,8 @@ class CondaTUI(App):
         """Sent before going in to application mode."""
 
         # Bind our basic keys
-        await self.bind("h,H", "display_logo()", "Home")
-        await self.bind("q,Q", "quit", "Quit")
+        await self.bind("h", "display_logo()", "Home")
+        await self.bind("q", "quit", "Quit")
 
     async def on_mount(self) -> None:
         """Call after terminal goes in to application mode"""
