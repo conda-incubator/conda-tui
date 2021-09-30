@@ -32,8 +32,9 @@ class PackageTableWidget(Widget):
             "Description",
             "Version",
             "Build",
-            "Features",
+            # "Features",
             "Channel",
+            "Status",
             title="Packages",
             expand=True,
         )
@@ -50,8 +51,9 @@ class PackageTableWidget(Widget):
                 "description": Text(description),
                 "version": Text(pkg.version),
                 "build": Text(pkg.build),
-                "features": Text(", ".join(pkg.get("features", ()))),
+                # "features": Text(", ".join(pkg.get("features", ()))),
                 "schannel": Text(pkg.schannel),
+                "status": Text.from_markup(pkg.status),
             }
             table.add_row(*texts.values(), style=style)
 
