@@ -1,8 +1,10 @@
 import json
 from pathlib import Path
 from typing import List
+from typing import Optional
 
 from rich.console import RenderableType
+from rich.style import Style
 from rich.table import Table
 from rich.text import Text
 from textual import events
@@ -23,6 +25,7 @@ class PackageTableWidget(Widget):
 
     def render(self) -> RenderableType:
         """Render the package table."""
+        # TODO: Consider rendering each row individually, as this probably won't scale.
         self.log("Rendering table")
         table = Table(
             "Name",
@@ -35,22 +38,22 @@ class PackageTableWidget(Widget):
             expand=True,
         )
         for row_num, pkg in enumerate(self._data):
-            style = ""
+            style: Optional[Style] = None
             if self.hover_row == row_num:
-                style = "bold red"
+                style = Style(bgcolor="white", bold=True)
 
             with Path(pkg.extracted_package_dir, "info", "about.json").open("r") as fh:
                 description = json.load(fh).get("summary", "")
 
             texts = {
-                "name": Text(pkg.name, style=style),
-                "description": Text(description, style=style),
-                "version": Text(pkg.version, style=style),
-                "build": Text(pkg.build, style=style),
-                "features": Text(", ".join(pkg.get("features", ())), style=style),
-                "schannel": Text(pkg.schannel, style=style),
+                "name": Text(pkg.name),
+                "description": Text(description),
+                "version": Text(pkg.version),
+                "build": Text(pkg.build),
+                "features": Text(", ".join(pkg.get("features", ()))),
+                "schannel": Text(pkg.schannel),
             }
-            table.add_row(*texts.values())
+            table.add_row(*texts.values(), style=style)
 
             # Embed the row number and column key as meta-style attributes
             # Can be pulled out by `on_mouse_move`
