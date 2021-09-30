@@ -29,7 +29,7 @@ def get_logo() -> Text:
 
     """
     with Path(HERE, "resources", "ascii-logo-80.txt").open("r") as fp:
-        lines = [line.rstrip() for line in fp.readlines()]
+        lines = fp.read().split("\n")
 
     max_line_length = max(len(line) for line in lines)
     blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
