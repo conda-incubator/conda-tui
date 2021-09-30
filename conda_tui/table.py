@@ -44,7 +44,7 @@ class PackageTableWidget(Widget):
             texts = {
                 "name": Text(pkg.name),
                 "description": Text(pkg.description),
-                "version": Text.from_markup(pkg.icon) + " " + Text(pkg.version),
+                "version": pkg.status,
                 "build": Text(pkg.build),
                 "schannel": Text(pkg.schannel),
             }
@@ -53,6 +53,8 @@ class PackageTableWidget(Widget):
             # Embed the row number and column key as meta-style attributes
             # Can be pulled out by `on_mouse_move`
             for key, text in texts.items():
+                if not isinstance(text, Text):
+                    continue
                 text.apply_meta(
                     {
                         "@click": f"click_row({row_num}, '{key}')",
@@ -68,5 +70,5 @@ class PackageTableWidget(Widget):
 
     async def action_click_row(self, row_id: int, col_name: str) -> None:
         self.log(f"Clicked row: {row_id}, column: {col_name}")
-        self._data[row_id].update()
+        self._data[row_id].update(self.console)
         self.refresh()

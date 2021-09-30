@@ -7,6 +7,11 @@ from typing import Any
 from typing import List
 
 from conda.core.prefix_data import PrefixData
+from rich.console import Console
+from rich.console import RenderableType
+from rich.progress import BarColumn
+from rich.progress import Progress
+from rich.text import Text
 
 from conda_tui.environment import Environment
 
@@ -26,21 +31,31 @@ class Package:
         return self._can_update
 
     @property
-    def icon(self) -> str:
-        return self.get_icon(self.can_update)
+    def status(self) -> RenderableType:
+        try:
+            if self._progress.finished:
+                del self._progress
+                del self._task
+
+            self._progress.update(self._task, advance=1)
+            return self._progress.get_renderable()
+        except AttributeError:
+            return self.get_icon(self.can_update) + " " + self.version
 
     @staticmethod
     @lru_cache
-    def get_icon(can_update: bool) -> str:
+    def get_icon(can_update: bool) -> Text:
         if can_update:
-            return "[bold #DB6015]\u2191[/]"
-        return "[bold #43b049]\u2714[/]"
+            return Text.from_markup("[bold #DB6015]\u2191[/]")
+        return Text.from_markup("[bold #43b049]\u2714[/]")
 
-    def update(self) -> None:
+    def update(self, console: Console) -> None:
         if not self._can_update:
             return
 
         # TODO: do update here
+        self._progress = Progress(BarColumn(bar_width=10), console=console)
+        self._task = self._progress.add_task("Downloading", total=10)
 
         # mock version incrementing
         self.version = "X.Y.Z"
