@@ -1,5 +1,6 @@
 import json
 import random
+from functools import cached_property
 from pathlib import Path
 from typing import Any
 from typing import List
@@ -18,7 +19,8 @@ class Package:
     def __getattr__(self, item: str) -> Any:
         return getattr(self._record, item)
 
-    @property
+    # TODO: caching improves performance of table load but only allows update on app launch
+    @cached_property
     def status(self) -> str:
         """A status string in console markup."""
         # TODO: Replace with real status
@@ -26,7 +28,7 @@ class Package:
             return "[blue]\u2B06[/blue] Upgrade to version [red]X.Y.Z[/red]"
         return "Up-to-date"
 
-    @property
+    @cached_property
     def description(self) -> str:
         """Attempt to load the package description."""
         try:
