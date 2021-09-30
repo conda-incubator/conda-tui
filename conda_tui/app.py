@@ -6,8 +6,6 @@ from rich.text import Text
 from textual.app import App
 from textual.events import Mount
 from textual.reactive import Reactive
-from textual.widgets import Footer
-from textual.widgets import Header
 from textual.widgets import ScrollView
 from textual.widgets import TreeClick
 from textual.widgets import TreeControl
@@ -15,6 +13,8 @@ from textual.widgets import TreeNode
 
 from conda_tui.environment import Environment
 from conda_tui.environment import list_environments
+from conda_tui.footer import Footer
+from conda_tui.header import Header
 from conda_tui.package import list_packages_for_environment
 from conda_tui.table import PackageTableWidget
 
@@ -35,7 +35,7 @@ def get_logo() -> Text:
     blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
     padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
 
-    logo_text = Text("\n".join(padded_lines), style="green", justify="center")
+    logo_text = Text("\n".join(padded_lines), style="#43b049", justify="center")
     return logo_text
 
 
@@ -110,6 +110,7 @@ class CondaTUI(App):
     """A hacked-together Conda Text User Interface (TUI)."""
 
     package_list: ScrollView
+    environment_list: ScrollView
 
     async def on_load(self) -> None:
         """Sent before going in to application mode."""
@@ -120,14 +121,12 @@ class CondaTUI(App):
 
     async def on_mount(self) -> None:
         """Call after terminal goes in to application mode."""
-        await self.view.dock(Header(), edge="top")
+        await self.view.dock(Header(style="white on #003764"), edge="top")
         await self.view.dock(Footer(), edge="bottom")
 
+        self.environment_list = ScrollView(EnvironmentTree())
         await self.view.dock(
-            EnvironmentTree(),
-            edge="left",
-            size=30,
-            name="sidebar",
+            self.environment_list, edge="left", size=30, name="sidebar"
         )
 
         self.package_list = ScrollView(get_logo())

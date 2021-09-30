@@ -16,27 +16,36 @@ class Package:
 
     def __init__(self, record: PrefixData):
         self._record = record
-        self._update: bool = bool(random.random() > 0.8)
+        self._can_update: bool = bool(random.random() > 0.8)
 
     def __getattr__(self, item: str) -> Any:
         return getattr(self._record, item)
 
     @property
-    def status(self) -> str:
-        """A status string in console markup."""
-        return self.get_status(self._update)
+    def can_update(self) -> bool:
+        return self._can_update
+
+    @property
+    def icon(self) -> str:
+        return self.get_icon(self.can_update)
 
     @staticmethod
     @lru_cache
-    def get_status(can_update: bool) -> str:
-        # TODO: Replace with real status
+    def get_icon(can_update: bool) -> str:
         if can_update:
-            return "[blue]\u2b06[/blue] Upgrade to version [red]X.Y.Z[/red]"
-        return "[green]\u2714[/green] Up-to-date"
+            return "[#0075A9]\u2191[/]"
+        return "[#43b049]\u2714[/]"
 
     def update(self) -> None:
+        if not self._can_update:
+            return
+
         # TODO: do update here
-        self._update = False
+
+        # mock version incrementing
+        self.version = "X.Y.Z"
+
+        self._can_update = False
 
     @cached_property
     def description(self) -> str:
