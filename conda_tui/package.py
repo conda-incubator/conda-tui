@@ -1,6 +1,7 @@
 import json
 import random
 from functools import cached_property
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 from typing import List
@@ -15,18 +16,27 @@ class Package:
 
     def __init__(self, record: PrefixData):
         self._record = record
+        self._update: bool = bool(random.random() > 0.8)
 
     def __getattr__(self, item: str) -> Any:
         return getattr(self._record, item)
 
-    # TODO: caching improves performance of table load but only allows update on app launch
-    @cached_property
+    @property
     def status(self) -> str:
         """A status string in console markup."""
+        return self.get_status(self._update)
+
+    @staticmethod
+    @lru_cache
+    def get_status(can_update: bool) -> str:
         # TODO: Replace with real status
-        if random.random() > 0.8:
+        if can_update:
             return "[blue]\u2B06[/blue] Upgrade to version [red]X.Y.Z[/red]"
         return "Up-to-date"
+
+    def update(self) -> None:
+        # TODO: do update here
+        self._update = False
 
     @cached_property
     def description(self) -> str:
