@@ -177,7 +177,11 @@ class CondaTUI(App):
         await self.bind("q", "quit", "Quit")
 
     async def on_mount(self) -> None:
-        """Call after terminal goes in to application mode"""
+        """Call after terminal goes in to application mode.
+
+        Configure grid and store references to elements to be updated.
+
+        """
 
         grid = await self.view.dock_grid()
 
@@ -209,18 +213,20 @@ class CondaTUI(App):
         )
 
     async def handle_tree_click(self, message: TreeClick[Environment]) -> None:
+        """Display the package list if the environment exists."""
         if not message.node.data.path:
             return
 
         # if not message.node.loaded:
-        await self.load_packages(message.node)
+        await self.show_package_table(message.node)
         await message.node.expand()
 
     async def action_display_logo(self) -> None:
         """Display the logo when "H" is pressed."""
         await self.package_list.update(get_logo())
 
-    async def load_packages(self, node: TreeNode[Environment]) -> None:
+    async def show_package_table(self, node: TreeNode[Environment]) -> None:
+        """Update the package list table based on selected environment."""
         packages = list_packages_for_environment(node.data)
         await self.package_list.update(PackageTableControl(packages))
 
