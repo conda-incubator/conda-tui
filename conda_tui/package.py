@@ -33,8 +33,8 @@ class Package:
     @lru_cache
     def get_icon(can_update: bool) -> str:
         if can_update:
-            return "[#0075A9]\u2191[/]"
-        return "[#43b049]\u2714[/]"
+            return "[bold #DB6015]\u2191[/]"
+        return "[bold #43b049]\u2714[/]"
 
     def update(self) -> None:
         if not self._can_update:
