@@ -70,5 +70,10 @@ class PackageTableWidget(Widget):
 
     async def action_click_row(self, row_id: int, col_name: str) -> None:
         self.log(f"Clicked row: {row_id}, column: {col_name}")
-        self._data[row_id].update(self.console)
-        self.refresh()
+
+        def callback() -> None:
+            self._data[row_id].increment()
+            self.refresh()
+
+        timer = self.set_interval(1.0, callback=callback)
+        self._data[row_id].update(self.console, timer)

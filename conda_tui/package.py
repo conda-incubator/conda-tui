@@ -1,5 +1,6 @@
 import json
 import random
+from contextlib import suppress
 from functools import cached_property
 from functools import lru_cache
 from pathlib import Path
@@ -12,6 +13,7 @@ from rich.console import RenderableType
 from rich.progress import BarColumn
 from rich.progress import Progress
 from rich.text import Text
+from textual._timer import Timer
 
 from conda_tui.environment import Environment
 
@@ -34,13 +36,21 @@ class Package:
     def status(self) -> RenderableType:
         try:
             if self._progress.finished:
-                del self._progress
-                del self._task
+                if self._sleep > 2:
+                    del self._progress
+                    del self._task
+                    del self._sleep
+                    del self._timer
+                else:
+                    self._sleep += 1
 
-            self._progress.update(self._task, advance=1)
             return self._progress.get_renderable()
         except AttributeError:
             return self.get_icon(self.can_update) + " " + self.version
+
+    def increment(self) -> None:
+        with suppress(AttributeError):
+            self._progress.advance(self._task)
 
     @staticmethod
     @lru_cache
@@ -49,13 +59,15 @@ class Package:
             return Text.from_markup("[bold #DB6015]\u2191[/]")
         return Text.from_markup("[bold #43b049]\u2714[/]")
 
-    def update(self, console: Console) -> None:
+    def update(self, console: Console, timer: Timer) -> None:
         if not self._can_update:
             return
 
         # TODO: do update here
         self._progress = Progress(BarColumn(bar_width=10), console=console)
-        self._task = self._progress.add_task("Downloading", total=10)
+        self._task = self._progress.add_task("Downloading", total=20)
+        self._sleep = 0
+        self._timer = timer
 
         # mock version incrementing
         self.version = "X.Y.Z"
