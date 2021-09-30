@@ -134,7 +134,7 @@ class CondaTUI(App):
         #       of header and footer. Maybe a Textual bug we can fix and PR?
         #       To reproduce, remove 'min_size' argument from the main row.
         grid.add_row(name="header", max_size=3)
-        grid.add_row(name="main", min_size=50)
+        grid.add_row(name="main", min_size=60)
         grid.add_row(name="footer", max_size=1)
 
         grid.add_areas(
