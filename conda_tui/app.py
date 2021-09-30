@@ -119,40 +119,19 @@ class CondaTUI(App):
         await self.bind("q", "quit", "Quit")
 
     async def on_mount(self) -> None:
-        """Call after terminal goes in to application mode.
+        """Call after terminal goes in to application mode."""
+        await self.view.dock(Header(), edge="top")
+        await self.view.dock(Footer(), edge="bottom")
 
-        Configure grid and store references to elements to be updated.
-
-        """
-
-        grid = await self.view.dock_grid()
-
-        grid.add_column(fraction=1, name="left", min_size=20)
-        grid.add_column(fraction=3, name="right")
-
-        # TODO: I can't seem to get the main row to expand to full-screen when I set max_size
-        #       of header and footer. Maybe a Textual bug we can fix and PR?
-        #       To reproduce, remove 'min_size' argument from the main row.
-        grid.add_row(name="header", max_size=3)
-        grid.add_row(name="main", min_size=60)
-        grid.add_row(name="footer", max_size=1)
-
-        grid.add_areas(
-            header="left-start|right-end,header",
-            env_list="left,main",
-            package_list="right,main",
-            footer="left-start|right-end,footer",
+        await self.view.dock(
+            EnvironmentTree(),
+            edge="left",
+            size=30,
+            name="sidebar",
         )
 
-        # Display the logo in the package list pane
         self.package_list = ScrollView(get_logo())
-
-        grid.place(
-            header=Header(),
-            env_list=EnvironmentTree(),
-            package_list=self.package_list,
-            footer=Footer(),
-        )
+        await self.view.dock(self.package_list, edge="right")
 
     async def handle_tree_click(self, message: TreeClick[Environment]) -> None:
         """Display the package list if the environment exists."""
