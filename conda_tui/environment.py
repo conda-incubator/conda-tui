@@ -45,6 +45,9 @@ class Environment:
             return basename(prefix)
         return ""
 
+    def __hash__(self) -> int:
+        return hash(self.path)
+
 
 def list_environments() -> List[Environment]:
     """Get a list of conda environments installed on local machine."""

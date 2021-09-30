@@ -49,6 +49,7 @@ class Package:
             return json.load(fh).get("summary", "")
 
 
+@lru_cache
 def list_packages_for_environment(env: Environment) -> List[Package]:
     prefix_data = PrefixData(env.path, pip_interop_enabled=True)
     packages = [Package(record) for record in prefix_data.iter_records()]
