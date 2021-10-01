@@ -1,6 +1,6 @@
 # A conda Text User Interface (TUI) built with Textual
 
-![logo](icons/conda-tui-color.png)
+![logo](icons/conda-tui-color-background.png)
 
 # Resources
 
