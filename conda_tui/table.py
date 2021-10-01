@@ -64,6 +64,9 @@ class PackageTableWidget(Widget):
                 )
         return table
 
+    async def on_mount(self) -> None:
+        self.set_interval(1.0, callback=self.refresh)
+
     async def on_mouse_move(self, event: events.MouseMove) -> None:
         self.log(f"Mouse move, row = {event.style.meta.get('row_num')}")
         self.hover_row = event.style.meta.get("row_num")
@@ -71,9 +74,5 @@ class PackageTableWidget(Widget):
     async def action_click_row(self, row_id: int, col_name: str) -> None:
         self.log(f"Clicked row: {row_id}, column: {col_name}")
 
-        def callback() -> None:
-            self._data[row_id].increment()
-            self.refresh()
-
-        timer = self.set_interval(1.0, callback=callback)
+        timer = self.set_interval(1.0, callback=self._data[row_id].increment)
         self._data[row_id].update(self.console, timer)
