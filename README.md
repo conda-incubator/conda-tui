@@ -1,3 +1,5 @@
+![logo](logo.png)
+
 # Conda TUI using Textual
 
 # Resources
