@@ -1,52 +1,45 @@
-                                               -+ossoooo++/:-.`
-                                  .-/-   ./-`    ./ossssssssssoo+/-.
-                              `-/oos/   .osso/.    `:osssssssssssssoo/-`
-                             `-:/+++   .ossssso/     -ssssssssssssssssso+:`
-                                       :oossso-    .+osssssssssssssssssssso+-
-                          /o+//:-.      ``-/:`   .+osssssssssssssssssssssssso+-`
-                     -/   +ssssss/   .-.`       `:::////++ossssssssssssssssssss+-
-                   `/o+   +ssssso`  `oo+:`               ``.-/+osssssssssssssssso+.
-                  -oss+   /o++++:   .-`                        `-/ossssssssssssssso:
-                 :+/:-.   ````                                    `-+ossssssssssssss/`
-                 `    `   `.---`                                     ./osssssssssssss+`
-               ``.-//++-  .sso-                                        -+sssssssssssss+`
-              `+ossssss/   o/`                                          `/ossssssssssss+`
-               -osssssso`  .                                              -ossssssssssss/
-            ..  :ossssoo.                                                  -ossssssssssss-
-            +o.  -oo+:.                                                     :ssssssssssss+
-           .sso.  ..   .-                                                    +ssssssssssss.
-           /sso+    `:os-                                                    -ssssssssssss/
-           +o/.  `   :oo`                                                     osssssssssss+
-           /.  `/o+.  ./                                                      +ssssssssssss
-             `/ossso:                                                         /ssssssssssss
-            :osssssss/                                                        +ssssssssssss
-             -+sssss/  ``                                                     ossssssssssso
-           ..  .:oo:  -o-                                                    .ssssssssssss/
-           .o+:`  `  :os+                                                    +ssssssssssss.
-            +sso+    `-/+:                                                  :ssssssssssss+
-            -sss-  ::.` ``                                                 -ossssssssssss-
-             /s:  :ssoo+:-                                                -ossssssssssss/
-             `:  .ossssss+  :`                                          `:ossssssssssss+`
-                `osssssss: `o+.                                        .+ssssssssssssso`
-                .//++oooo- .sso/.                                    ./osssssssssssss+`
-                  `````..` `-----`                                `-/ossssssssssssss+`
-                  -+++//:` `-------::-`                        `./+ssssssssssssssso:
-                   .+osss- .sssssssssso+:-.``            ``.-:+osssssssssssssssso+.
-                     -oss: `osssssssssssssoo++//:::::://++oossssssssssssssssssso-
-                      `:o/  ossssssssssssssssssssssssssssssssssssssssssssssso+-`
-                        `.  /ssssssssssssssssssssssssssssssssssssssssssssso+-
-                            .+osssssssssssssssssssssssssssssssssssssssso+:.
-                              .:+oossssssssssssssssssssssssssssssssoo+:.
-                                  .:/oossssssssssssssssssssssssoo/:.
-                                      `.-://+ooossssssooo+//:-.`
 
-    `/oohhdhhss-`      `-:/+++++/:.`      .+/.          ///:    //////////:-`            -+-
-  -ohdohmhhmhsmy+:   `/++++++/++++++:`    .+++/.        +++:    ++++////+++++/-         -+++-
- :moomys-...:+++:`  -++++-`     `-++++-   .+++++/`      +++:    +++/      ./+++/`      -+++++-
-+yymhs`            .+++/          `/+++.  .+++++++/`    +++:    +++/        .++++     .+++/+++.
-shyyh`             /+++            `+++:  .+++-`/+++:`  +++:    +++/         :+++.   .+++- :+++.
-yysyy`             /+++`           `+++:  .+++-  ./+++:`+++:    +++/         /+++.  .+++:   :+++.
-:+NNh/`            .+++/          `/+++.  .+++-    ./++++++:    +++/        -+++/  .++++-----++++.
- :smMmy/-...-:oy/`  -++++-`     .:++++.   .+++-      .+++++:    +++/     `-/+++/` .+++++++++++++++`
-  ./ydNMmdddmNNds:   `:+++++++++++++:`    .+++-        -+++:    +++++++++++++/.  `+++/        `/+++`
-    `.:+oyyys+:-`       .://+++//:.       `///.          -+:    //////////:.`    ///:          `///:
+
+                                                        ......
+                                          .:^~~!7^      .~?JJ????7~:
+                                      .^!?JJJJYJ^   ~7:   .!JJJ?!^.        :
+                                       .:^!7?J?.  .7JJJ7:   :!^    .~77.   ~?!^.
+                              .^7:  ~~:.    .:.  :?JJJJJJ!.     .~7JJJJ?.   ?JJJ7~.
+                            ^7JJJ. :JJJJ?7~:     !JJJJJJJJ:    :JJJJJJJJ7   ^JJJJJJ7^.
+                         .~?YYJJ?  ~JJJJJJJJ~     :7JJJJ7.      7JJJJJJJJ:   ?JJJJJJJJ!.
+                        :~!!!!!7!  !YJJJJJJJ.  :^   :?Y!   .!   .?JJJJ?!^.   ~JJJJJJJJY?
+                                   .~!?JJJJ7   !Y7.  .^   .?Y~   ^J7^.      .~JJJJJJJJJ!
+                   :.  ~777777!!^      .^!?~   ?YJJ^      !???.   .    .^!7?JJJJJJJJJ7:
+                  ^J~  ~YJJJJJJJ?.  ^7^.   .   ~~:..         .      .~?JJJJJJJJJJJJ7:
+                 !JJ?  .?JJJJJJJJ!  .?YJ?!.                         .^!?JJJJJJJJJ!:
+                !JJJJ~  ^JJJJJJJJY~  .?J7^.                            .^7JJJJ?!.
+               !YJJJJJ:  ^!!~~~~~!!.  .:                                  .:::.
+              !J?7~^..      ....
+             .~:   .:~!7!.  ~?JJ???!.
+               .^!?JJJJJJ?^  .!?JY?.
+            .. :?YJJJJJJJJJ?^. .^7:
+            !?:  ~JJJJJJJJJJ?!.
+            ?JJ!. .~?JJ7~:.   ...
+           .?JJJJ!:  :. .:~!7?JJ7
+           .JJJJJ?^     :!?JJJJY7
+           .?JJ?^  :!?7~:  .:^!77
+            ?J~  :7JJJJJJ?7~^.
+            ~:  !JJJJJJJJJJJJJJ?7~
+              .?JJJJJJ77?JJJJJJJJJ:
+             :JJJJJJJ~  ..:^^7JJJJ?:
+             :JJJJJJ~         !JJJJJ^
+              ~JJJJ?           ~JJJJJ!.
+               !JJJJ!           :7JJJJJ~.                                 .^^^.
+                !JJJJ?:           ^?JJJJJ!:                            .~7JJJJJ7^
+                 !JJJJJ~            ^7JJJJJ?!^.                    .:~7JJJJJJJJJJ?^
+                  ^JJJJJ?^            :!?JJJJJJ?7~^::.........:^~!7JJJJJJJJ7^~?JJJJ?^
+                   .7JJJJJ7:             :!?JJJJJJJJJJJ?????JJJJJJJJJJJ?7^.    ^7JJJJ?^
+                     ^?JJJJJ7^              .^~7?JJJJJJJJJJJJJJJJJ?7!^:.         ^?JJJJ7
+                       ^?JJJJJ?~.                .:^^~!!!!!!~~^^:.              .^?JJJJ7
+                         ^7JJJJJJ7~:                                         .^7JJJJJ?~
+                           :~?JJJJJJ?!^.                                 .^!7JJJJJJ7^.
+                              :~?JJJJJJJ?7~^:.                     .:^~!?JJJJJJJ?~:
+                                 .^!?JJJJJJJJJ?77!~~^^^^^^^^^~~!!7?JJJJJJJJJ?7~:
+                                     .:~!7?JJJYYYYYYJJJJJJJJJJYYYYYJJJJ?7!^:
+                                          ..:^~!!77????JJJJ?????77!~^:.
+                                                     ........
