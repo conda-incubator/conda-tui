@@ -120,9 +120,9 @@ class EnvironmentList(Static):
         items = []
         for env in list_environments():
             if env.name:
-                label = f"[bold][green]{env.name}[/green][/bold] ({env.prefix})"
+                label = f"[bold][green]{env.name}[/green][/bold] ({env.relative_path})"
             else:
-                label = env.prefix
+                label = str(env.relative_path)
             items.append(ListItem(Label(label)))
         yield ListView(*items)
 

@@ -1,31 +1,26 @@
 from dataclasses import dataclass
 from functools import lru_cache
-from os.path import basename
-from os.path import dirname
+from pathlib import Path
 
 from conda.base.constants import ROOT_ENV_NAME
 from conda.base.context import context
 from conda.common.path import paths_equal
 from conda.core.envs_manager import list_all_known_prefixes as list_prefixes
 
-# from os.path import expanduser
-# from os.path import relpath
-
 
 @dataclass
 class Environment:
-    prefix: str
+    prefix: Path
 
-    # @property
-    # def rpath(self) -> Optional[str]:
-    #     if self.path is None:
-    #         return None
-    #     return self.get_relative(self.path)
-    #
-    # @staticmethod
-    # @lru_cache
-    # def get_relative(prefix: str) -> str:
-    #     return relpath(prefix, expanduser("~"))
+    @property
+    def relative_path(self) -> Path:
+        return self._get_relative_path(self.prefix)
+
+    @staticmethod
+    @lru_cache
+    def _get_relative_path(prefix: Path) -> Path:
+        user_home = Path("~")
+        return user_home / prefix.relative_to(user_home.expanduser())
 
     @property
     def name(self) -> str:
@@ -34,7 +29,7 @@ class Environment:
 
     @staticmethod
     @lru_cache
-    def _get_name(prefix: str) -> str:
+    def _get_name(prefix: Path) -> str:
         """Retrieve the name of the environment from its prefix, if it has a name.
 
         Otherwise, returns an empty string.
@@ -42,12 +37,12 @@ class Environment:
         Cached for performance.
 
         """
-        if prefix == context.root_prefix:
+        if str(prefix) == context.root_prefix:
             return ROOT_ENV_NAME
         elif any(
-            paths_equal(envs_dir, dirname(prefix)) for envs_dir in context.envs_dirs
+            paths_equal(envs_dir, str(prefix.parent)) for envs_dir in context.envs_dirs
         ):
-            return basename(prefix)
+            return str(prefix.name)
         return ""
 
     def __hash__(self) -> int:
@@ -56,4 +51,4 @@ class Environment:
 
 def list_environments() -> list[Environment]:
     """Get a list of conda environments installed on local machine."""
-    return [Environment(prefix=env) for env in list_prefixes()]
+    return [Environment(prefix=Path(env)) for env in list_prefixes()]
