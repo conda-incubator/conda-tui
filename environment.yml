@@ -2,43 +2,12 @@ name: conda-tui
 channels:
   - defaults
 dependencies:
-  - brotlipy=0.7.0=py39h9ed2024_1003
-  - ca-certificates=2021.7.5=hecd8cb5_1
-  - certifi=2021.5.30=py39hecd8cb5_0
-  - cffi=1.14.6=py39h2125817_0
-  - charset-normalizer=2.0.4=pyhd3eb1b0_0
-  - conda=4.10.3=py39hecd8cb5_0
-  - conda-package-handling=1.7.3=py39h9ed2024_1
-  - cryptography=3.4.7=py39h2fd3fbb_0
-  - idna=3.2=pyhd3eb1b0_0
-  - libcxx=12.0.0=h2f01273_0
-  - libffi=3.3=hb1e8313_2
-  - ncurses=6.2=h0a44026_1
-  - openssl=1.1.1l=h9ed2024_0
-  - pip=21.2.4=py37hecd8cb5_0
-  - pycosat=0.6.3=py39h9ed2024_0
-  - pycparser=2.20=py_2
-  - pyopenssl=20.0.1=pyhd3eb1b0_1
-  - pysocks=1.7.1=py39hecd8cb5_0
-  - python=3.9.7=h88f2d9e_1
-  - readline=8.1=h9ed2024_0
-  - requests=2.26.0=pyhd3eb1b0_0
-  - ruamel_yaml=0.15.100=py39h9ed2024_0
-  - setuptools=58.0.4=py39hecd8cb5_0
-  - six=1.16.0=pyhd3eb1b0_0
-  - sqlite=3.36.0=hce871da_0
-  - tk=8.6.11=h7bc2e8c_0
-  - tqdm=4.62.2=pyhd3eb1b0_1
-  - tzdata=2021a=h5d7bf9c_0
-  - urllib3=1.26.6=pyhd3eb1b0_1
-  - wheel=0.37.0=pyhd3eb1b0_1
-  - xz=5.2.5=h1de35cc_0
-  - yaml=0.2.5=haf1e3a3_0
-  - zlib=1.2.11=h1de35cc_3
+  - python=3.9.7
+  - pip=21.2.4
+  - conda=4.10.3
   - pip:
     - colorama==0.4.4
     - commonmark==0.9.1
     - pygments==2.10.0
     - rich==10.11.0
     - textual==0.1.12
-prefix: /opt/anaconda3/envs/conda-tui
