@@ -20,7 +20,7 @@ dev = [
 ]
 
 [project.scripts]
-conda-tui = "conda_tui.app:run"
+conda-tui = "conda_tui.app:CondaTUI"
 
 [tool.isort]
 force_single_line = true
