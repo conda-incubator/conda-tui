@@ -1,10 +1,11 @@
-# from functools import lru_cache
+from functools import lru_cache
 from pathlib import Path
 
 # from rich.console import RenderableType
-# from rich.text import Text
+from rich.text import Text
 from textual.app import App
 from textual.app import ComposeResult
+from textual.widgets import Static
 
 # from conda_tui.environment import Environment
 # from conda_tui.environment import list_environments
@@ -21,26 +22,27 @@ from conda_tui.widgets import Header
 # from conda_tui.table import PackageTableWidget
 
 HERE = Path(__file__).parent
+LOGO_PATH = Path(HERE, "resources", "ascii-logo-80.txt")
 
 
-# @lru_cache
-# def get_logo() -> Text:
-#     """Load the text for the ASCII art.
-#
-#     Ensure all lines same length and beginning with blank non-whitespace character.
-#
-#     """
-#     with Path(HERE, "resources", "ascii-logo-80.txt").open("r") as fp:
-#         lines = fp.read().split("\n")
-#
-#     max_line_length = max(len(line) for line in lines)
-#     blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
-#     padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
-#
-#     logo_text = Text("\n".join(padded_lines), style="#43b049", justify="center")
-#     return logo_text
-#
-#
+@lru_cache
+def get_logo() -> Text:
+    """Load the text for the ASCII art.
+
+    Ensure all lines same length and beginning with blank non-whitespace character.
+
+    """
+    with LOGO_PATH.open("r") as fp:
+        lines = fp.read().split("\n")
+
+    max_line_length = max(len(line) for line in lines)
+    blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
+    padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
+
+    logo_text = Text("\n".join(padded_lines))
+    return logo_text
+
+
 # class EnvironmentTree(TreeControl[Environment]):
 #     has_focus = Reactive(False)
 #
@@ -116,6 +118,7 @@ class CondaTUI(App):
     BINDINGS = [
         ("h", "display_logo", "Home"),
         ("q", "quit", "Quit"),
+        ("t", "toggle_logo", "Toggle logo"),
     ]
 
     # package_list: ScrollView
@@ -124,6 +127,12 @@ class CondaTUI(App):
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         yield Footer()
+        yield Static(renderable=get_logo(), id="logo")
+
+    def action_toggle_logo(self):
+        """"""
+        logo = self.query_one("#logo")
+        logo.toggle_class("hidden")
 
     # async def on_mount(self) -> None:
     #     """Call after terminal goes in to application mode."""

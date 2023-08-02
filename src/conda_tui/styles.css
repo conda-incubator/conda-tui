@@ -2,3 +2,12 @@ Header {
     color: white;
     background: #003764;
 }
+
+.hidden {
+    display: none;
+}
+
+#logo {
+    color: #43b049;
+    text-align: center;
+}
