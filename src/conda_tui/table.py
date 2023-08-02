@@ -18,7 +18,9 @@ class PackageTableWidget(Widget):
 
     hover_row = Reactive(None)
 
-    def __init__(self, env: Environment, data: List[Package], *, name: Optional[str] = None):
+    def __init__(
+        self, env: Environment, data: List[Package], *, name: Optional[str] = None
+    ):
         super().__init__(name=name)
         self._env = env
         self._data = data
