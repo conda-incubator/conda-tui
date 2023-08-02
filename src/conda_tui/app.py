@@ -112,7 +112,7 @@ class CondaTUI(App):
     """A hacked-together Conda Text User Interface (TUI)."""
 
     TITLE = "conda-tui"
-
+    CSS_PATH = Path("styles.css")
     BINDINGS = [
         ("h", "display_logo", "Home"),
         ("q", "quit", "Quit"),
@@ -125,11 +125,8 @@ class CondaTUI(App):
         yield Header(show_clock=True)
         yield Footer()
 
-    #
     # async def on_mount(self) -> None:
     #     """Call after terminal goes in to application mode."""
-    #     await self.view.dock(Header(style="white on #003764"), edge="top")
-    #     await self.view.dock(Footer(), edge="bottom")
     #
     #     self.environment_list = ScrollView(EnvironmentTree())
     #     await self.view.dock(
