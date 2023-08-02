@@ -12,7 +12,7 @@ from textual.widgets import ListView
 from textual.widgets import Static
 
 # from conda_tui.environment import Environment
-# from conda_tui.environment import list_environments
+from conda_tui.environment import list_environments
 from conda_tui.widgets import Footer
 from conda_tui.widgets import Header
 
@@ -116,11 +116,11 @@ def get_logo() -> Text:
 
 class EnvironmentList(Static):
     def compose(self) -> ComposeResult:
-        yield ListView(
-            ListItem(Label("One")),
-            ListItem(Label("Two")),
-            ListItem(Label("Three")),
-        )
+        """Generate a static list view of all conda environments"""
+        items = []
+        for env in list_environments():
+            items.append(ListItem(Label(env.label)))
+        yield ListView(*items)
 
 
 class CondaTUI(App):
