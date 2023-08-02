@@ -12,7 +12,7 @@ from rich.console import RenderableType
 from rich.progress import BarColumn
 from rich.progress import Progress
 from rich.text import Text
-from textual._timer import Timer
+from textual.events import Timer
 
 from conda_tui.environment import Environment
 
