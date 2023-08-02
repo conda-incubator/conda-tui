@@ -5,6 +5,10 @@ from pathlib import Path
 from rich.text import Text
 from textual.app import App
 from textual.app import ComposeResult
+from textual.reactive import reactive
+from textual.widgets import Label
+from textual.widgets import ListItem
+from textual.widgets import ListView
 from textual.widgets import Static
 
 # from conda_tui.environment import Environment
@@ -110,16 +114,28 @@ def get_logo() -> Text:
 #         await self.root.expand()
 
 
+class EnvironmentList(Static):
+    def compose(self) -> ComposeResult:
+        yield ListView(
+            ListItem(Label("One")),
+            ListItem(Label("Two")),
+            ListItem(Label("Three")),
+        )
+
+
 class CondaTUI(App):
     """A hacked-together Conda Text User Interface (TUI)."""
 
     TITLE = "conda-tui"
     CSS_PATH = Path("styles.css")
     BINDINGS = [
-        ("h", "display_logo", "Home"),
+        ("h", "go_home", "Home"),
+        ("e", "show_environment_list", "Environments"),
         ("q", "quit", "Quit"),
-        ("t", "toggle_logo", "Toggle logo"),
     ]
+
+    show_logo = reactive(True)
+    show_environment_list = reactive(False)
 
     # package_list: ScrollView
     # environment_list: ScrollView
@@ -128,11 +144,31 @@ class CondaTUI(App):
         yield Header(show_clock=True)
         yield Footer()
         yield Static(renderable=get_logo(), id="logo")
+        yield EnvironmentList(classes="hidden", id="environment-list")
 
-    def action_toggle_logo(self):
-        """"""
+    def action_go_home(self):
+        self.show_logo = True
+        self.show_environment_list = False
+
+    def action_show_environment_list(self):
+        self.show_logo = False
+        self.show_environment_list = True
+
+    def watch_show_logo(self, show_logo: bool) -> None:
+        """Hide or un-hide logo based on show_logo reactive variable."""
         logo = self.query_one("#logo")
-        logo.toggle_class("hidden")
+        if show_logo:
+            logo.remove_class("hidden")
+        else:
+            logo.add_class("hidden")
+
+    def watch_show_environment_list(self):
+        """Hide or un-hide environment list based on show_environment_list reactive variable."""
+        env_list = self.query_one("#environment-list")
+        if self.show_environment_list:
+            env_list.remove_class("hidden")
+        else:
+            env_list.add_class("hidden")
 
     # async def on_mount(self) -> None:
     #     """Call after terminal goes in to application mode."""
