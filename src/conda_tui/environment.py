@@ -49,6 +49,20 @@ class Environment:
         return hash(self.prefix)
 
 
-def list_environments() -> list[Environment]:
-    """Get a list of conda environments installed on local machine."""
-    return [Environment(prefix=Path(env)) for env in list_prefixes()]
+def list_environments(sort: bool = True) -> list[Environment]:
+    """Get a list of conda environments installed on local machine.
+
+    Args:
+        sort: If True, the list will be sorted alphabetically, with named environments
+            appearing first, followed by path-based environments.
+
+    """
+
+    environments = [Environment(prefix=Path(env)) for env in list_prefixes()]
+    if sort:
+        named = sorted((e for e in environments if e.name), key=lambda x: x.name)
+        unnamed = sorted(
+            (e for e in environments if not e.name), key=lambda x: str(x.relative_path)
+        )
+        return named + unnamed
+    return environments
