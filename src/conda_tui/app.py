@@ -8,8 +8,8 @@ from textual.app import ComposeResult
 
 # from conda_tui.environment import Environment
 # from conda_tui.environment import list_environments
-from conda_tui.footer import Footer
-from conda_tui.header import Header
+from conda_tui.widgets import Footer
+from conda_tui.widgets import Header
 
 # from textual.events import Mount
 # from textual.reactive import Reactive
