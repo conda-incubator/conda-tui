@@ -36,11 +36,11 @@ class CondaTUI(App):
         yield EnvironmentList(classes="hidden", id="environment-list")
         yield Footer()
 
-    def action_go_home(self):
+    def action_go_home(self) -> None:
         self.show_logo = True
         self.show_environment_list = False
 
-    def action_show_environment_list(self):
+    def action_show_environment_list(self) -> None:
         self.show_logo = False
         self.show_environment_list = True
 
@@ -52,7 +52,7 @@ class CondaTUI(App):
         else:
             logo.add_class("hidden")
 
-    def watch_show_environment_list(self):
+    def watch_show_environment_list(self) -> None:
         """Hide or un-hide environment list based on show_environment_list reactive variable."""
         env_list = self.query_one("#environment-list")
         if self.show_environment_list:

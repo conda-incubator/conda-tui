@@ -86,6 +86,6 @@ class Package:
 
 @lru_cache
 def list_packages_for_environment(env: Environment) -> list[Package]:
-    prefix_data = PrefixData(env.path, pip_interop_enabled=True)
+    prefix_data = PrefixData(str(env.prefix), pip_interop_enabled=True)
     packages = [Package(record) for record in prefix_data.iter_records()]
     return sorted(packages, key=lambda x: x.name)

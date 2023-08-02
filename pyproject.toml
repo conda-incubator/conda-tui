@@ -29,7 +29,6 @@ profile = "black"
 [tool.mypy]
 disallow_untyped_defs = true
 files = [
-  "app.py",
   "src/**/*.py"
 ]
 python_version = "3.9"
