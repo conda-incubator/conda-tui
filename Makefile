@@ -12,7 +12,7 @@ setup:  ## Setup local dev conda environment
 	$(CONDA_EXE) env $(shell [ -d $(conda_env_dir) ] && echo update || echo create) -p $(conda_env_dir) --file environment-dev.yml
 
 run:  ## Run the application from the dev environment
-	$(CONDA_RUN) python app.py
+	$(CONDA_RUN) python -m conda_tui
 
 type-check:  ## Run static type checks
 	$(CONDA_RUN) mypy

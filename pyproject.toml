@@ -18,6 +18,9 @@ dev = [
   "tox",
 ]
 
+[project.scripts]
+conda-tui = "conda_tui.app:run"
+
 [tool.setuptools_scm]
 write_to = "src/conda_tui/_version.py"
 
