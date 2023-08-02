@@ -1,0 +1,9 @@
+name: conda-tui
+channels:
+  - defaults
+dependencies:
+  - python=3.9.7
+  - pip
+  - conda=4.10.3
+  - pip:
+    - "-e .[dev]"
