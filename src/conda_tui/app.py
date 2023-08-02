@@ -1,73 +1,19 @@
-from functools import cache
 from pathlib import Path
-from typing import Any
 
-# from rich.console import RenderableType
-from rich.text import Text
 from textual.app import App
 from textual.app import ComposeResult
 from textual.reactive import reactive
-from textual.widgets import Label
-from textual.widgets import ListItem
-from textual.widgets import ListView
-from textual.widgets import Static
 
-# from conda_tui.environment import Environment
-from conda_tui.environment import list_environments
+from conda_tui.widgets import EnvironmentList
 from conda_tui.widgets import Footer
 from conda_tui.widgets import Header
+from conda_tui.widgets import Logo
 
-# from textual.events import Mount
-# from textual.reactive import Reactive
-# TODO: We need to get rid of this private import
 # from textual.widgets._tree_control import TreeNode, TreeControl
 # from textual.scroll_view import ScrollView
 
 # from conda_tui.package import list_packages_for_environment
 # from conda_tui.table import PackageTableWidget
-
-HERE = Path(__file__).parent
-
-
-class Logo(Static):
-    """A static display of the conda logo"""
-
-    LOGO_PATH = Path(HERE, "resources", "ascii-logo-80.txt")
-
-    def __init__(self, **kwargs: Any):
-        super().__init__(renderable=self.get_logo(), **kwargs)
-
-    @cache
-    def get_logo(self) -> Text:
-        """Load the text for the ASCII art.
-
-        Ensure all lines same length and beginning with blank non-whitespace character.
-
-        """
-        with self.LOGO_PATH.open("r") as fp:
-            lines = fp.read().split("\n")
-
-        max_line_length = max(len(line) for line in lines)
-        blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
-        padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
-
-        logo_text = Text("\n".join(padded_lines))
-        return logo_text
-
-
-class EnvironmentList(Static):
-    def compose(self) -> ComposeResult:
-        """Generate a static list view of all conda environments"""
-        items = []
-        for env in list_environments():
-            # TODO: Black/White should be based on hover
-            if env.name:
-                label = f"\N{BLACK CIRCLE} [bold][green]{env.name}[/green][/bold] ({env.relative_path})"
-            else:
-                label = f"\N{WHITE CIRCLE} {env.relative_path}"
-            items.append(ListItem(Label(label)))
-        yield Static("Environment List", classes="center")
-        yield ListView(*items)
 
 
 class CondaTUI(App):
