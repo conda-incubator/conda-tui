@@ -15,3 +15,6 @@ __pycache__
 
 # conda environment
 env/
+
+# Generated version file
+/src/conda_tui/_version.py
