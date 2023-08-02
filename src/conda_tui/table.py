@@ -1,4 +1,3 @@
-from typing import List
 from typing import Optional
 
 from rich.console import RenderableType
@@ -19,7 +18,7 @@ class PackageTableWidget(Widget):
     hover_row = Reactive(None)
 
     def __init__(
-        self, env: Environment, data: List[Package], *, name: Optional[str] = None
+        self, env: Environment, data: list[Package], *, name: Optional[str] = None
     ):
         super().__init__(name=name)
         self._env = env

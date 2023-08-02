@@ -21,7 +21,7 @@ from conda_tui.table import PackageTableWidget
 HERE = Path(__file__).parent
 
 
-@lru_cache()
+@lru_cache
 def get_logo() -> Text:
     """Load the text for the ASCII art.
 

@@ -4,7 +4,6 @@ from os.path import basename
 from os.path import dirname
 from os.path import expanduser
 from os.path import relpath
-from typing import List
 from typing import Optional
 
 from conda.base.constants import ROOT_ENV_NAME
@@ -62,7 +61,7 @@ class Environment:
         return hash(self.path)
 
 
-def list_environments() -> List[Environment]:
+def list_environments() -> list[Environment]:
     """Get a list of conda environments installed on local machine."""
 
     return [Environment(env) for env in list_prefixes()]

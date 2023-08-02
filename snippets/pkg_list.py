@@ -1,9 +1,7 @@
-from typing import Dict
-
 from conda.core.prefix_data import PrefixData
 
 
-def list_packages(prefix: str) -> Dict[str, PrefixData]:
+def list_packages(prefix: str) -> dict[str, PrefixData]:
     installed = sorted(
         PrefixData(prefix, pip_interop_enabled=True).iter_records(),
         key=lambda x: x.name,
