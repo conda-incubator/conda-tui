@@ -5,7 +5,6 @@ from functools import cached_property
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
-from typing import List
 
 from conda.core.prefix_data import PrefixData
 from rich.console import Console
@@ -86,7 +85,7 @@ class Package:
 
 
 @lru_cache
-def list_packages_for_environment(env: Environment) -> List[Package]:
+def list_packages_for_environment(env: Environment) -> list[Package]:
     prefix_data = PrefixData(env.path, pip_interop_enabled=True)
     packages = [Package(record) for record in prefix_data.iter_records()]
     return sorted(packages, key=lambda x: x.name)
