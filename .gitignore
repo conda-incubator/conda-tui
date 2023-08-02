@@ -6,6 +6,9 @@ __pycache__
 .DS_Store
 *.swp
 
+# Packaging stuff
+*.egg-info
+
 # IDE settings
 .idea/
 .vscode/
