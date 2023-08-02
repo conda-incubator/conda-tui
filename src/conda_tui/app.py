@@ -1,5 +1,6 @@
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
+from typing import Any
 
 # from rich.console import RenderableType
 from rich.text import Text
@@ -26,25 +27,32 @@ from conda_tui.widgets import Header
 # from conda_tui.table import PackageTableWidget
 
 HERE = Path(__file__).parent
-LOGO_PATH = Path(HERE, "resources", "ascii-logo-80.txt")
 
 
-@lru_cache
-def get_logo() -> Text:
-    """Load the text for the ASCII art.
+class Logo(Static):
+    """A static display of the conda logo"""
 
-    Ensure all lines same length and beginning with blank non-whitespace character.
+    LOGO_PATH = Path(HERE, "resources", "ascii-logo-80.txt")
 
-    """
-    with LOGO_PATH.open("r") as fp:
-        lines = fp.read().split("\n")
+    def __init__(self, **kwargs: Any):
+        super().__init__(renderable=self.get_logo(), **kwargs)
 
-    max_line_length = max(len(line) for line in lines)
-    blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
-    padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
+    @cache
+    def get_logo(self) -> Text:
+        """Load the text for the ASCII art.
 
-    logo_text = Text("\n".join(padded_lines))
-    return logo_text
+        Ensure all lines same length and beginning with blank non-whitespace character.
+
+        """
+        with self.LOGO_PATH.open("r") as fp:
+            lines = fp.read().split("\n")
+
+        max_line_length = max(len(line) for line in lines)
+        blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
+        padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
+
+        logo_text = Text("\n".join(padded_lines))
+        return logo_text
 
 
 class EnvironmentList(Static):
@@ -78,7 +86,7 @@ class CondaTUI(App):
 
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        yield Static(renderable=get_logo(), id="logo")
+        yield Logo(id="logo")
         yield EnvironmentList(classes="hidden", id="environment-list")
         yield Footer()
 

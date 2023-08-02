@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 
 from conda.base.constants import ROOT_ENV_NAME
@@ -17,7 +17,7 @@ class Environment:
         return self._get_relative_path(self.prefix)
 
     @staticmethod
-    @lru_cache
+    @cache
     def _get_relative_path(prefix: Path) -> Path:
         user_home = Path("~")
         return user_home / prefix.relative_to(user_home.expanduser())
@@ -28,7 +28,7 @@ class Environment:
         return self._get_name(self.prefix)
 
     @staticmethod
-    @lru_cache
+    @cache
     def _get_name(prefix: Path) -> str:
         """Retrieve the name of the environment from its prefix, if it has a name.
 
