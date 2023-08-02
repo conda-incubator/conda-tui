@@ -12,7 +12,8 @@ def list_packages(prefix: str) -> Dict[str, PrefixData]:
 
 
 if __name__ == "__main__":
-    from env_list import get_envs, get_name
+    from env_list import get_envs
+    from env_list import get_name
     from rich import print
     from rich.table import Table
 
