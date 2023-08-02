@@ -47,82 +47,16 @@ def get_logo() -> Text:
     return logo_text
 
 
-# class EnvironmentTree(TreeControl[Environment]):
-#     has_focus = Reactive(False)
-#
-#     def __init__(self) -> None:
-#         super().__init__("envs", data=Environment())
-#
-#     def on_focus(self) -> None:
-#         self.has_focus = True
-#
-#     def on_blur(self) -> None:
-#         self.has_focus = False
-#
-#     def render_node(self, node: TreeNode[Environment]) -> RenderableType:
-#         return self.render_label(
-#             node,
-#             node.expanded,
-#             node.is_cursor,
-#             node.id == self.hover_node,
-#             self.has_focus,
-#         )
-#
-#     @lru_cache
-#     def render_label(
-#         self,
-#         node: TreeNode[Environment],
-#         expanded: bool,
-#         is_cursor: bool,
-#         is_hover: bool,
-#         has_focus: bool,
-#     ) -> RenderableType:
-#         meta = {
-#             "@click": f"click_label({node.id})",
-#             "tree_node": node.id,
-#             "cursor": node.is_cursor,
-#         }
-#
-#         if not isinstance(node.label, str):
-#             label = node.label
-#         else:
-#             label = Text(
-#                 # if path is defined get a pretty name
-#                 (node.data.rpath if is_hover else node.data.name or node.data.rpath)
-#                 # if no path just reuse label
-#                 or node.label,
-#                 no_wrap=True,
-#             )
-#
-#         if is_hover:
-#             label.stylize("bold")
-#
-#         icon_label = (
-#             Text(
-#                 "\u25cf" if expanded else "\u25cb",
-#                 no_wrap=True,
-#             )
-#             + " "
-#             + label
-#         )
-#         icon_label.apply_meta(meta)
-#         return icon_label
-#
-#     async def on_mount(self, event: Mount) -> None:
-#         for env in list_environments():
-#             await self.add(self.root.id, env.name or env.path, env)
-#         await self.root.expand()
-
-
 class EnvironmentList(Static):
     def compose(self) -> ComposeResult:
         """Generate a static list view of all conda environments"""
         items = []
         for env in list_environments():
+            # TODO: Black/White should be based on hover
             if env.name:
-                label = f"[bold][green]{env.name}[/green][/bold] ({env.relative_path})"
+                label = f"\N{BLACK CIRCLE} [bold][green]{env.name}[/green][/bold] ({env.relative_path})"
             else:
-                label = str(env.relative_path)
+                label = f"\N{WHITE CIRCLE} {env.relative_path}"
             items.append(ListItem(Label(label)))
         yield Static("Environment List", classes="center")
         yield ListView(*items)
@@ -142,14 +76,11 @@ class CondaTUI(App):
     show_logo = reactive(True)
     show_environment_list = reactive(False)
 
-    # package_list: ScrollView
-    # environment_list: ScrollView
-
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
-        yield Footer()
         yield Static(renderable=get_logo(), id="logo")
         yield EnvironmentList(classes="hidden", id="environment-list")
+        yield Footer()
 
     def action_go_home(self):
         self.show_logo = True
