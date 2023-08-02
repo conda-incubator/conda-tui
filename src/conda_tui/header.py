@@ -1,21 +1,21 @@
-# from rich.console import RenderableType
-# from rich.panel import Panel
-# from rich.table import Table
+from textual.reactive import Reactive
 from textual.widgets import Header as _Header
+from textual.widgets._header import HeaderClock
+from textual.widgets._header import HeaderClockSpace
+from textual.widgets._header import HeaderIcon as _HeaderIcon
+from textual.widgets._header import HeaderTitle
+
+
+class HeaderIcon(_HeaderIcon):
+    """A custom header icon."""
+
+    icon = Reactive("🐍")
 
 
 class Header(_Header):
-    pass
-    # def render(self) -> RenderableType:
-    #     full_title = "Some title"
-    #     header_table = Table.grid(padding=(0, 1), expand=True)
-    #     # header_table.style = self.style
-    #     header_table.add_column(justify="left", ratio=0, width=8)
-    #     header_table.add_column("title", justify="center", ratio=1)
-    #     header_table.add_column("clock", justify="right", width=8)
-    #     # header_table.add_row(
-    #     #     "🐍", full_title, self.get_clock() if self.clock else ""
-    #     # )
-    #     header: RenderableType
-    #     header = Panel(header_table, style=self.style) if self.tall else header_table
-    #     return header
+    """A custom header to display a custom snake icon."""
+
+    def compose(self):
+        yield HeaderIcon()
+        yield HeaderTitle()
+        yield HeaderClock() if self._show_clock else HeaderClockSpace()

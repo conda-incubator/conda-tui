@@ -122,7 +122,7 @@ class CondaTUI(App):
     # environment_list: ScrollView
 
     def compose(self) -> ComposeResult:
-        yield Header()
+        yield Header(show_clock=True)
         yield Footer()
 
     #
