@@ -7,6 +7,10 @@ Header {
     display: none;
 }
 
+.center {
+    text-align: center;
+}
+
 #logo {
     color: #43b049;
     text-align: center;

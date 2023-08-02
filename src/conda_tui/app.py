@@ -124,6 +124,7 @@ class EnvironmentList(Static):
             else:
                 label = str(env.relative_path)
             items.append(ListItem(Label(label)))
+        yield Static("Environment List", classes="center")
         yield ListView(*items)
 
 
