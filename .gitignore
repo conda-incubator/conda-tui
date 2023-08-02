@@ -12,3 +12,6 @@ __pycache__
 
 # Log files
 *.log
+
+# conda environment
+env/
