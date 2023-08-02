@@ -30,11 +30,11 @@ class Environment:
     @property
     def name(self) -> str:
         """The name of the conda environment, if it is named. Otherwise, an empty string."""
-        return self.get_name(self.prefix)
+        return self._get_name(self.prefix)
 
     @staticmethod
     @lru_cache
-    def get_name(prefix: str) -> str:
+    def _get_name(prefix: str) -> str:
         """Retrieve the name of the environment from its prefix, if it has a name.
 
         Otherwise, returns an empty string.
@@ -49,18 +49,6 @@ class Environment:
         ):
             return basename(prefix)
         return ""
-
-    @property
-    def label(self) -> str:
-        return self.get_label(self.prefix, self.name)
-
-    @staticmethod
-    @lru_cache
-    def get_label(prefix: str, name: str) -> str:
-        """A nice string label for the environment, for rendering with terminal markdown."""
-        if name:
-            return f"[bold][green]{name}[/green][/bold] ({prefix})"
-        return prefix
 
     def __hash__(self) -> int:
         return hash(self.prefix)

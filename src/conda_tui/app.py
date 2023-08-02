@@ -119,7 +119,11 @@ class EnvironmentList(Static):
         """Generate a static list view of all conda environments"""
         items = []
         for env in list_environments():
-            items.append(ListItem(Label(env.label)))
+            if env.name:
+                label = f"[bold][green]{env.name}[/green][/bold] ({env.prefix})"
+            else:
+                label = env.prefix
+            items.append(ListItem(Label(label)))
         yield ListView(*items)
 
 
