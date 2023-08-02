@@ -15,26 +15,23 @@ requires-python = ">=3.9"
 dev = [
   "mypy",
   "pytest",
-  "tox",
+  "tox"
 ]
 
 [project.scripts]
 conda-tui = "conda_tui.app:run"
-
-[tool.setuptools_scm]
-write_to = "src/conda_tui/_version.py"
 
 [tool.isort]
 force_single_line = true
 profile = "black"
 
 [tool.mypy]
-python_version = "3.9"
 disallow_untyped_defs = true
 files = [
   "app.py",
-  "src/**/*.py",
+  "src/**/*.py"
 ]
+python_version = "3.9"
 
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
@@ -43,3 +40,6 @@ module = "conda.*"
 [[tool.mypy.overrides]]
 ignore_missing_imports = true
 module = "textual.*"
+
+[tool.setuptools_scm]
+write_to = "src/conda_tui/_version.py"
