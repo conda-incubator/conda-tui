@@ -3,7 +3,7 @@ build-backend = "setuptools.build_meta"
 requires = ["setuptools>=42", "setuptools-scm[toml]>=6.2"]
 
 [project]
-dependencies = ["textual"]
+dependencies = ["textual<0.32"]
 description = "A Text User Interface for conda"
 dynamic = ["version"]
 license = {text = "BSD-3-Clause"}
@@ -15,6 +15,7 @@ requires-python = ">=3.9"
 dev = [
   "mypy",
   "pytest",
+  "textual-dev",
   "tox"
 ]
 
@@ -28,7 +29,6 @@ profile = "black"
 [tool.mypy]
 disallow_untyped_defs = true
 files = [
-  "app.py",
   "src/**/*.py"
 ]
 python_version = "3.9"

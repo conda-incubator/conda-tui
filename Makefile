@@ -14,6 +14,12 @@ setup:  ## Setup local dev conda environment
 run:  ## Run the application from the dev environment
 	$(CONDA_RUN) python -m conda_tui
 
+dev:  ## Run the application in dev mode
+	$(CONDA_RUN) textual run --dev -c conda-tui
+
+log:  ## Run the log tailer (run in another terminal)
+	$(CONDA_RUN) textual console
+
 type-check:  ## Run static type checks
 	$(CONDA_RUN) mypy
 
