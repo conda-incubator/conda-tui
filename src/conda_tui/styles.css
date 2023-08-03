@@ -15,3 +15,13 @@ Header {
     color: #43b049;
     text-align: center;
 }
+
+PackageDetailScreen {
+    align: center middle;
+}
+
+#package-details {
+    width: 60;
+    grid-size: 2 1;
+    margin-top: 5;
+}

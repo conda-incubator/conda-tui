@@ -3,8 +3,8 @@ from typing import Any
 from typing import Optional
 
 from rich.json import JSON
-from rich.text import Text
 from textual.app import ComposeResult
+from textual.containers import Grid
 from textual.reactive import reactive
 from textual.screen import Screen as _Screen
 from textual.widgets import DataTable
@@ -92,8 +92,13 @@ class PackageDetailScreen(Screen):
 
     def compose(self) -> ComposeResult:
         yield from super().compose()
-        yield Static(Text.from_markup(f"Package details for `{self._package.name}`:"))
-        yield Static(JSON(json.dumps(self._package.dist_fields_dump())))
+        yield Grid(
+            Static(
+                f"Package details for [cyan bold]`{self._package.name}`[/cyan bold]:"
+            ),
+            Static(JSON(json.dumps(self._package.dist_fields_dump()))),
+            id="package-details",
+        )
 
     def action_go_back(self):
         self.dismiss()
