@@ -77,11 +77,7 @@ class PackageListScreen(Screen):
 
 
 class PackageDetailScreen(Screen):
-    """A screen to display the details of a package.
-
-    TODO: This is just a simple JSON dump, should be nicer.
-
-    """
+    """A screen to display the details of a package."""
 
     BINDINGS = [
         ("escape", "go_back", "Back"),
@@ -92,6 +88,7 @@ class PackageDetailScreen(Screen):
         self._package = package
 
     def compose(self) -> ComposeResult:
+        # TODO: This is just a simple JSON dump, should be nicer.
         yield from super().compose()
         yield Grid(
             Static(
