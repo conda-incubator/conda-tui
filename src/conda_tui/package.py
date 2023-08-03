@@ -1,6 +1,5 @@
 import json
 import random
-from contextlib import suppress
 from functools import cache
 from functools import cached_property
 from pathlib import Path
@@ -30,10 +29,6 @@ class Package:
     @property
     def status(self) -> Text:
         return self._get_update_status_icon(self.can_update) + " " + self.version
-
-    def increment(self) -> None:
-        with suppress(AttributeError):
-            self._progress.advance(self._task)
 
     @staticmethod
     @cache

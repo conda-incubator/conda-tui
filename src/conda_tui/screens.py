@@ -8,13 +8,13 @@ from textual.containers import Grid
 from textual.reactive import reactive
 from textual.screen import Screen as _Screen
 from textual.widgets import DataTable
+from textual.widgets import Footer
 from textual.widgets import Static
 
 from conda_tui.environment import Environment
 from conda_tui.package import Package
 from conda_tui.package import list_packages_for_environment
 from conda_tui.widgets import EnvironmentList
-from conda_tui.widgets import Footer
 from conda_tui.widgets import Header
 from conda_tui.widgets import Logo
 from conda_tui.widgets import PackageUpdateProgress
