@@ -1,28 +1,33 @@
+from functools import cached_property
 from typing import Optional
 
 from rich.console import RenderableType
 from rich.style import Style
 from rich.table import Table
 from rich.text import Text
-from textual import events
-from textual.reactive import Reactive
+from textual.reactive import reactive
 from textual.widget import Widget
 
 from conda_tui.environment import Environment
-from conda_tui.package import Package
+from conda_tui.package import list_packages_for_environment
 
 
 class PackageTableWidget(Widget):
     """A table widget allowing custom rendering of cell contents when hovering and clicking."""
 
-    hover_row = Reactive(None)
+    hover_row = reactive(None)
 
-    def __init__(
-        self, env: Environment, data: list[Package], *, name: Optional[str] = None
-    ):
-        super().__init__(name=name)
+    def __init__(self, env: Environment):
+        super().__init__()
         self._env = env
-        self._data = data
+        self._packages = list_packages_for_environment(env)
+
+    @cached_property
+    def title(self) -> str:
+        if self._env.name:
+            return f"[bold][green]{self._env.name}[/green][/bold] ({self._env.relative_path})"
+        else:
+            return f"{self._env.relative_path}"
 
     def render(self) -> RenderableType:
         """Render the package table."""
@@ -34,10 +39,10 @@ class PackageTableWidget(Widget):
             "Version",
             "Build",
             "Channel",
-            title=self._env.title,
+            title=self.title,
             expand=True,
         )
-        for row_num, pkg in enumerate(self._data):
+        for row_num, pkg in enumerate(self._packages):
             style: Optional[Style] = None
             if self.hover_row == row_num:
                 style = Style(reverse=True, bold=True)
@@ -65,15 +70,15 @@ class PackageTableWidget(Widget):
                 )
         return table
 
-    async def on_mount(self) -> None:
-        self.set_interval(1.0, callback=self.refresh)
-
-    async def on_mouse_move(self, event: events.MouseMove) -> None:
-        self.log(f"Mouse move, row = {event.style.meta.get('row_num')}")
-        self.hover_row = event.style.meta.get("row_num")
-
-    async def action_click_row(self, row_id: int, col_name: str) -> None:
-        self.log(f"Clicked row: {row_id}, column: {col_name}")
-
-        timer = self.set_interval(1.0, callback=self._data[row_id].increment)
-        self._data[row_id].update(self.console, timer)
+    # async def on_mount(self) -> None:
+    #     self.set_interval(1.0, callback=self.refresh)
+    #
+    # async def on_mouse_move(self, event: events.MouseMove) -> None:
+    #     self.log(f"Mouse move, row = {event.style.meta.get('row_num')}")
+    #     self.hover_row = event.style.meta.get("row_num")
+    #
+    # async def action_click_row(self, row_id: int, col_name: str) -> None:
+    #     self.log(f"Clicked row: {row_id}, column: {col_name}")
+    #
+    #     timer = self.set_interval(1.0, callback=self._packages[row_id].increment)
+    #     self._packages[row_id].update(self.console, timer)
