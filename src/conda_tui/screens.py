@@ -41,13 +41,8 @@ class PackageListScreen(Screen):
 
     def compose(self) -> ComposeResult:
         yield from super().compose()
-        # TODO: This is just placeholder text for now
-        from rich.text import Text
-        from textual.widgets import Static
-
-        if self.environment is not None:
-            yield Static(Text(str(self.environment.prefix)))
-            yield PackageTableWidget(self.environment)
+        assert self.environment is not None, "Shouldn't be possible"
+        yield PackageTableWidget(self.environment)
 
     def action_go_back(self) -> None:
         self.dismiss()
