@@ -1,8 +1,8 @@
 import json
 import random
 from contextlib import suppress
+from functools import cache
 from functools import cached_property
-from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -22,6 +22,7 @@ class Package:
 
     def __init__(self, record: PrefixData):
         self._record = record
+        # TODO: This should be replaced with a call to the conda repo
         self._can_update: bool = bool(random.random() > 0.8)
 
     def __getattr__(self, item: str) -> Any:
@@ -45,18 +46,18 @@ class Package:
 
             return self._progress.get_renderable()
         except AttributeError:
-            return self.get_icon(self.can_update) + " " + self.version
+            return self._get_update_status_icon(self.can_update) + " " + self.version
 
     def increment(self) -> None:
         with suppress(AttributeError):
             self._progress.advance(self._task)
 
     @staticmethod
-    @lru_cache
-    def get_icon(can_update: bool) -> Text:
+    @cache
+    def _get_update_status_icon(can_update: bool) -> Text:
         if can_update:
-            return Text.from_markup("[bold #DB6015]\u2191[/]")
-        return Text.from_markup("[bold #43b049]\u2714[/]")
+            return Text.from_markup("[bold #DB6015]\N{UPWARDS ARROW}[/]")
+        return Text.from_markup("[bold #43b049]\N{HEAVY CHECK MARK}[/]")
 
     def update(self, console: Console, timer: Timer) -> None:
         if not self._can_update:
@@ -80,11 +81,14 @@ class Package:
             package_dir = self.extracted_package_dir
         except AttributeError:
             return ""
-        with Path(package_dir, "info", "about.json").open("r") as fh:
+        info_path = Path(package_dir, "info", "about.json")
+        if not info_path.exists():
+            return ""
+        with info_path.open("r") as fh:
             return json.load(fh).get("summary", "")
 
 
-@lru_cache
+@cache
 def list_packages_for_environment(env: Environment) -> list[Package]:
     prefix_data = PrefixData(str(env.prefix), pip_interop_enabled=True)
     packages = [Package(record) for record in prefix_data.iter_records()]
