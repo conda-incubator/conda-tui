@@ -18,7 +18,7 @@ from conda_tui.environment import Environment
 
 
 class Package:
-    """Wrap a conda record, and supplement with custom attributes."""
+    """Wrap a conda PrefixRecord, and supplement with custom attributes."""
 
     def __init__(self, record: PrefixData):
         self._record = record
