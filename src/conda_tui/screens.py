@@ -71,6 +71,7 @@ class PackageListScreen(Screen):
         self.dismiss()
 
     def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+        """Push a new package detail screen when a package is selected."""
         screen = PackageDetailScreen(package=self.package_map[event.row_key.value])
         self.app.push_screen(screen)
 
