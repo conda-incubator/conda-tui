@@ -5,6 +5,7 @@ from textual.app import App
 from conda_tui.screens import EnvironmentScreen
 from conda_tui.screens import HomeScreen
 from conda_tui.screens import PackageListScreen
+from conda_tui.screens import ShellCommandScreen
 
 
 class CondaTUI(App):
@@ -16,10 +17,12 @@ class CondaTUI(App):
         "home": HomeScreen(),
         "environments": EnvironmentScreen(),
         "package_list": PackageListScreen(),
+        "shell_command": ShellCommandScreen(),
     }
     BINDINGS = [
         ("h", "switch_screen('home')", "Home"),
         ("e", "switch_screen('environments')", "Environments"),
+        ("?", "push_screen('shell_command')", "Shell command"),
         ("q", "quit", "Quit"),
     ]
 

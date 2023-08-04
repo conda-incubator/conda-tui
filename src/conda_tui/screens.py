@@ -18,6 +18,7 @@ from conda_tui.widgets import EnvironmentList
 from conda_tui.widgets import Header
 from conda_tui.widgets import Logo
 from conda_tui.widgets import PackageUpdateProgress
+from conda_tui.widgets.progress import ShellCommandProgress
 
 
 class Screen(_Screen):
@@ -108,6 +109,17 @@ class PackageUpdateScreen(Screen):
 
     def action_go_back(self):
         self.dismiss()
+
+
+class ShellCommandScreen(Screen):
+    def compose(self) -> ComposeResult:
+        yield from super().compose()
+        yield Static("Running a shell command")
+        yield ShellCommandProgress("conda", "--help")
+
+    def on_screen_resume(self) -> None:
+        progress = self.query_one(ShellCommandProgress)
+        self.run_worker(progress.run_commands())
 
 
 class PackageDetailScreen(Screen):
