@@ -117,6 +117,10 @@ class ShellCommandScreen(Screen):
         ("escape", "go_back", "Back"),
     ]
 
+    def __init__(self, command: list[str], **kwargs: Any):
+        super().__init__(**kwargs)
+        self._command = command
+
     def compose(self) -> ComposeResult:
         yield from super().compose()
         yield ShellCommandProgress()
@@ -126,7 +130,7 @@ class ShellCommandScreen(Screen):
         log = self.query_one("#shell-command-log")
         log.clear()
         progress = self.query_one(ShellCommandProgress)
-        self.run_worker(progress.run_command("conda", "--help", log=log))
+        self.run_worker(progress.run_command(self._command, log=log))
 
     def action_go_back(self):
         self.dismiss()

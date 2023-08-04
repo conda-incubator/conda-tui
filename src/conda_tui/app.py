@@ -17,12 +17,11 @@ class CondaTUI(App):
         "home": HomeScreen(),
         "environments": EnvironmentScreen(),
         "package_list": PackageListScreen(),
-        "shell_command": ShellCommandScreen(),
     }
     BINDINGS = [
         ("h", "switch_screen('home')", "Home"),
         ("e", "switch_screen('environments')", "Environments"),
-        ("?", "push_screen('shell_command')", "Shell command"),
+        ("?", "run_command(['conda', '-h'])", "Help"),
         ("q", "quit", "Quit"),
     ]
 
@@ -34,6 +33,10 @@ class CondaTUI(App):
 
         """
         self.push_screen("home")
+
+    def action_run_command(self, command: list[str]) -> None:
+        screen = ShellCommandScreen(command)
+        self.push_screen(screen)
 
 
 def run() -> None:

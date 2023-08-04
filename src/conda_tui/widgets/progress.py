@@ -48,7 +48,7 @@ class ShellCommandProgress(Static):
     def on_mount(self) -> None:
         self.set_interval(1 / 60, lambda: self.update(self._bar))
 
-    async def run_command(self, *command: str, log: Log):
+    async def run_command(self, command: list[str], log: Log):
         # Remove any existing tasks
         for task_id in self._bar.task_ids:
             self._bar.remove_task(task_id)
