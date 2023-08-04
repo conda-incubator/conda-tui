@@ -9,7 +9,7 @@ help:  ## Display help on all Makefile targets
 	@@grep -h '^[a-zA-Z]' $(MAKEFILE_LIST) | awk -F ':.*?## ' 'NF==2 {printf "   %-20s%s\n", $$1, $$2}' | sort
 
 setup:  ## Setup local dev conda environment
-	$(CONDA_EXE) env $(shell [ -d $(conda_env_dir) ] && echo update || echo create) -p $(conda_env_dir) --file environment-dev.yml
+	$(CONDA_EXE) env $(shell [ -d $(conda_env_dir) ] && echo update || echo create) -p $(conda_env_dir) --file etc/dev-environment.yml
 
 run:  ## Run the application from the dev environment
 	$(CONDA_RUN) python -m conda_tui
