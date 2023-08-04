@@ -5,6 +5,7 @@ from textual.app import App
 from conda_tui.screens import EnvironmentScreen
 from conda_tui.screens import HomeScreen
 from conda_tui.screens import PackageListScreen
+from conda_tui.screens import ShellCommandScreen
 
 
 class CondaTUI(App):
@@ -20,7 +21,9 @@ class CondaTUI(App):
     BINDINGS = [
         ("h", "switch_screen('home')", "Home"),
         ("e", "switch_screen('environments')", "Environments"),
+        ("i", "run_command(['conda', 'info'])", "Info"),
         ("q", "quit", "Quit"),
+        ("?", "run_command(['conda', '-h'])", "Help"),
     ]
 
     def on_mount(self) -> None:
@@ -31,6 +34,10 @@ class CondaTUI(App):
 
         """
         self.push_screen("home")
+
+    def action_run_command(self, command: list[str]) -> None:
+        screen = ShellCommandScreen(command)
+        self.push_screen(screen)
 
 
 def run() -> None:

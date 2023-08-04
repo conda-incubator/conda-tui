@@ -17,23 +17,27 @@ class Package:
     def __init__(self, record: PrefixData):
         self._record = record
         # TODO: This should be replaced with a call to the conda repo
-        self._can_update: bool = bool(random.random() > 0.8)
+        self._update_available = random.random() > 0.8
 
     def __getattr__(self, item: str) -> Any:
         return getattr(self._record, item)
 
     @property
-    def can_update(self) -> bool:
-        return self._can_update
+    def update_available(self) -> bool:
+        return self._update_available
+
+    @update_available.setter
+    def update_available(self, value: bool) -> None:
+        self._update_available = value
 
     @property
     def status(self) -> Text:
-        return self._get_update_status_icon(self.can_update) + " " + self.version
+        return self._get_update_status_icon(self.update_available) + " " + self.version
 
     @staticmethod
     @cache
-    def _get_update_status_icon(can_update: bool) -> Text:
-        if can_update:
+    def _get_update_status_icon(update_available: bool) -> Text:
+        if update_available:
             return Text.from_markup("[bold #DB6015]\N{UPWARDS ARROW}[/]")
         return Text.from_markup("[bold #43b049]\N{HEAVY CHECK MARK}[/]")
 

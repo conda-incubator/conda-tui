@@ -9,6 +9,7 @@ from textual.reactive import reactive
 from textual.screen import Screen as _Screen
 from textual.widgets import DataTable
 from textual.widgets import Footer
+from textual.widgets import Log
 from textual.widgets import Static
 
 from conda_tui.environment import Environment
@@ -18,6 +19,7 @@ from conda_tui.widgets import EnvironmentList
 from conda_tui.widgets import Header
 from conda_tui.widgets import Logo
 from conda_tui.widgets import PackageUpdateProgress
+from conda_tui.widgets.progress import ShellCommandProgress
 
 
 class Screen(_Screen):
@@ -47,6 +49,7 @@ class PackageListScreen(Screen):
     BINDINGS = [
         ("escape", "go_back", "Back"),
         ("u", "update_package", "Update"),
+        ("s", "show_available_updates", "Show Available Updates"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -81,7 +84,24 @@ class PackageListScreen(Screen):
         table = self.query_one(DataTable)
         row_num = table.cursor_row
         package = self.packages[row_num]
-        self.app.push_screen(PackageUpdateScreen(package=package))
+
+        def update_package_status(was_success: bool):
+            if was_success:
+                table.update_cell_at((row_num, 2), package.status)
+
+        self.app.push_screen(
+            PackageUpdateScreen(package=package), update_package_status
+        )
+
+    def action_show_available_updates(self) -> None:
+        if self.environment.name:
+            env_args = ["-n", self.environment.name]
+        else:
+            env_args = ["-p", str(self.environment.prefix)]
+        screen = ShellCommandScreen(
+            ["conda", "update", *env_args, "--all", "--dry-run"]
+        )
+        self.app.push_screen(screen)
 
 
 class PackageUpdateScreen(Screen):
@@ -98,6 +118,30 @@ class PackageUpdateScreen(Screen):
         yield Static(f"Updating package [cyan bold]`{self._package.name}`[/cyan bold]")
         yield Static("[red bold]TODO[/red bold]: Hook this up to actual download")
         yield PackageUpdateProgress(package=self._package)
+
+    def action_go_back(self):
+        self.dismiss()
+
+
+class ShellCommandScreen(Screen):
+    BINDINGS = [
+        ("escape", "go_back", "Back"),
+    ]
+
+    def __init__(self, command: list[str], **kwargs: Any):
+        super().__init__(**kwargs)
+        self._command = command
+
+    def compose(self) -> ComposeResult:
+        yield from super().compose()
+        yield ShellCommandProgress()
+        yield Log(highlight=True, id="shell-command-log")
+
+    def on_screen_resume(self) -> None:
+        log = self.query_one("#shell-command-log")
+        log.clear()
+        progress = self.query_one(ShellCommandProgress)
+        self.run_worker(progress.run_command(self._command, log=log))
 
     def action_go_back(self):
         self.dismiss()
