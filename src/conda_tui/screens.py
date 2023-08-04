@@ -9,6 +9,7 @@ from textual.reactive import reactive
 from textual.screen import Screen as _Screen
 from textual.widgets import DataTable
 from textual.widgets import Footer
+from textual.widgets import Log
 from textual.widgets import Static
 
 from conda_tui.environment import Environment
@@ -112,14 +113,23 @@ class PackageUpdateScreen(Screen):
 
 
 class ShellCommandScreen(Screen):
+    BINDINGS = [
+        ("escape", "go_back", "Back"),
+    ]
+
     def compose(self) -> ComposeResult:
         yield from super().compose()
-        yield Static("Running a shell command")
-        yield ShellCommandProgress("conda", "--help")
+        yield ShellCommandProgress()
+        yield Log(highlight=True, id="shell-command-log")
 
     def on_screen_resume(self) -> None:
+        log = self.query_one("#shell-command-log")
+        log.clear()
         progress = self.query_one(ShellCommandProgress)
-        self.run_worker(progress.run_commands())
+        self.run_worker(progress.run_command("conda", "--help", log=log))
+
+    def action_go_back(self):
+        self.dismiss()
 
 
 class PackageDetailScreen(Screen):
