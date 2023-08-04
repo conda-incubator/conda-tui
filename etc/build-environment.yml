@@ -1,0 +1,4 @@
+dependencies:
+- conda
+- conda-build
+- setuptools-scm
