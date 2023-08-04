@@ -21,37 +21,32 @@ concurrency:
 jobs:
   pre-commit:
     runs-on:
-      labels: self-hosted-main
+      labels: ubuntu-latest
     # Disable pre-commit during draft PR status, only run when "Ready for Review"
     if: ${{ !github.event.pull_request.draft }}
     steps:
-    # Checkout the repo into the worker
-    - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+    # Checkout code and setup miniconda with pre-commit dependencies
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
       with:
-        token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        # fetch-depth 0 is needed for PRs with merge commits
-        fetch-depth: 0
-
-    # Cache the pre-commit environments based on changes to the .pre-commit-config.yaml file
-    - uses: actions/cache@88522ab9f39a2ea568f7027eddc7d8d8bc9d59c8 # v3
-      with:
-        path: ~/.cache/pre-commit
-        key: pre-commit-3|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
-
-    # FIXME: This should be taken from the image automatically, but for some reason that does not happen.
-    # https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-system-path
-    - run: echo "/home/runner/.local/conda/bin:/home/runner/go/bin" >> $GITHUB_PATH
-
+        miniconda-version: latest
+        python-version: "3.10"
+        channels: conda-forge
+        activate-environment: pre-commit-env
+        environment-file: etc/pre-commit-environment.yml
+        auto-activate-base: false
     - name: Get changed files
       id: changed-files
       uses: tj-actions/changed-files@de0eba32790fb9bf87471b32855a30fc8f9d5fc6 # v37.4.0
 
     # Adapted from https://github.com/pre-commit/action/blob/efd3bcfec120bd343786e46318186153b7bc8c68/action.yml#L19
-    - run: pre-commit run --show-diff-on-failure --color=always --files ${{ steps.changed-files.outputs.all_changed_files }}
+    - name: Run pre-commit
+      if: "${{ steps.changed-files.outputs.all_changed_files != '' }}"
+      shell: bash -l {0}
+      run: pre-commit run --show-diff-on-failure --color=always --files ${{ steps.changed-files.outputs.all_changed_files }}
       # When pre-commit makes changes, this step will error. With continue-on-error, we
       # continue execution to commit the changed files
       continue-on-error: true
-      if: "${{ steps.changed-files.outputs.all_changed_files != '' }}"
 
     - name: Checkout the branch we're running on to enable a commit to it
       run: git checkout ${{ github.head_ref }}
@@ -66,5 +61,7 @@ jobs:
 
     # Run a second time - if there's still changes, manual intervention is needed
     # Adapted from https://github.com/pre-commit/action/blob/efd3bcfec120bd343786e46318186153b7bc8c68/action.yml#L19
-    - run: pre-commit run --show-diff-on-failure --color=always --files ${{ steps.changed-files.outputs.all_changed_files }}
+    - name: Run pre-commit after changes
       if: "${{ steps.changed-files.outputs.all_changed_files != '' }}"
+      shell: bash -l {0}
+      run: pre-commit run --show-diff-on-failure --color=always --files ${{ steps.changed-files.outputs.all_changed_files }}
