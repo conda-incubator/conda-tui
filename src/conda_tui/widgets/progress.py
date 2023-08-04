@@ -63,11 +63,13 @@ class ShellCommandProgress(Static):
                 tmp_path = Path(tmp_dir, "tmp.log")
                 # Here, the subprocess writes to the temporary file, and then
                 # the polling writes to the log widget. We do it this way so
-                # it is not blocking.
+                # it is not blocking. The sleep call is important because it
+                # allows the event loop to be used by the other UI threads.
                 with tmp_path.open("w") as writer, tmp_path.open("r", 1) as reader:
                     process = subprocess.Popen(command, stdout=writer, stderr=writer)
                     while process.poll() is None:
                         log.write(reader.read())
+                        await asyncio.sleep(0.1)
                     # Write any remaining characters
                     log.write(reader.read())
                 log.write(f"\nFinished with status code {process.returncode}")
