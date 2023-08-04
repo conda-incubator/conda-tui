@@ -49,6 +49,7 @@ class PackageListScreen(Screen):
     BINDINGS = [
         ("escape", "go_back", "Back"),
         ("u", "update_package", "Update"),
+        ("s", "show_available_updates", "Show Available Updates"),
     ]
 
     def compose(self) -> ComposeResult:
@@ -91,6 +92,16 @@ class PackageListScreen(Screen):
         self.app.push_screen(
             PackageUpdateScreen(package=package), update_package_status
         )
+
+    def action_show_available_updates(self) -> None:
+        if self.environment.name:
+            env_args = ["-n", self.environment.name]
+        else:
+            env_args = ["-p", str(self.environment.prefix)]
+        screen = ShellCommandScreen(
+            ["conda", "update", *env_args, "--all", "--dry-run"]
+        )
+        self.app.push_screen(screen)
 
 
 class PackageUpdateScreen(Screen):
