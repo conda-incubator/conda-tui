@@ -5,3 +5,5 @@ dependencies:
 - conda
 - tox
 - tox-conda
+- pip:
+  - tox-gh-actions
