@@ -27,6 +27,9 @@ jobs:
     steps:
     # Checkout code and setup miniconda with pre-commit dependencies
     - uses: actions/checkout@v3
+      token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+      # fetch-depth 0 is needed for PRs with merge commits
+      fetch-depth: 0
     - uses: conda-incubator/setup-miniconda@v2
       with:
         miniconda-version: latest
