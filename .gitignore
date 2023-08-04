@@ -22,3 +22,6 @@ env/
 
 # Generated version file
 /src/conda_tui/_version.py
+
+# Toll output and caches
+/.mypy_cache
