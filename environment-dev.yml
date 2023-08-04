@@ -4,6 +4,6 @@ channels:
 dependencies:
 - python=3.9.7
 - pip
-- conda=4.10.3
+- conda
 - pip:
   - "-e .[dev]"
