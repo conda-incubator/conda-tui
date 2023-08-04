@@ -65,7 +65,7 @@ class ShellCommandProgress(Static):
                 # the polling writes to the log widget. We do it this way so
                 # it is not blocking.
                 with tmp_path.open("w") as writer, tmp_path.open("r", 1) as reader:
-                    process = subprocess.Popen(command, stdout=writer)
+                    process = subprocess.Popen(command, stdout=writer, stderr=writer)
                     while process.poll() is None:
                         log.write(reader.read())
                     # Write any remaining characters

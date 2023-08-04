@@ -21,8 +21,9 @@ class CondaTUI(App):
     BINDINGS = [
         ("h", "switch_screen('home')", "Home"),
         ("e", "switch_screen('environments')", "Environments"),
-        ("?", "run_command(['conda', '-h'])", "Help"),
+        ("i", "run_command(['conda', 'info'])", "Info"),
         ("q", "quit", "Quit"),
+        ("?", "run_command(['conda', '-h'])", "Help"),
     ]
 
     def on_mount(self) -> None:
