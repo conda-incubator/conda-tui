@@ -24,5 +24,6 @@ env/
 /src/conda_tui/_version.py
 
 # Toll output and caches
-/.mypy_cache
+/.mypy_cache/
+/.pytest_cache/
 /.tox/
