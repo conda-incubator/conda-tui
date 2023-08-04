@@ -46,7 +46,10 @@ class CondaTUI(App):
 
 def run(argv: Optional[list[str]] = None) -> None:
     """Run the application."""
-    argv = argv or sys.argv[1:]
+    argv = argv or sys.argv
+    while argv[0] in {"conda", "tui", "conda-tui"}:
+        argv = argv[1:]
+
     parser = argparse.ArgumentParser("conda tui")
     parser.add_argument("--no-dark", action="store_true", help="Disable dark mode")
     args = parser.parse_args(argv)
