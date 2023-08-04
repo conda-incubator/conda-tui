@@ -81,7 +81,14 @@ class PackageListScreen(Screen):
         table = self.query_one(DataTable)
         row_num = table.cursor_row
         package = self.packages[row_num]
-        self.app.push_screen(PackageUpdateScreen(package=package))
+
+        def update_package_status(was_success: bool):
+            if was_success:
+                table.update_cell_at((row_num, 2), package.status)
+
+        self.app.push_screen(
+            PackageUpdateScreen(package=package), update_package_status
+        )
 
 
 class PackageUpdateScreen(Screen):
@@ -101,6 +108,11 @@ class PackageUpdateScreen(Screen):
 
     def action_go_back(self):
         self.dismiss()
+
+    def on_mount(self):
+        """On mount, run the package update in the background"""
+        progress = self.query_one(PackageUpdateProgress)
+        self.run_worker(progress.update_package())
 
 
 class PackageDetailScreen(Screen):
