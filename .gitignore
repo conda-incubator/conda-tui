@@ -25,3 +25,4 @@ env/
 
 # Toll output and caches
 /.mypy_cache
+/.tox/

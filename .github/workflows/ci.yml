@@ -36,3 +36,28 @@ jobs:
       with:
         name: package-${{ github.sha }}
         path: conda-bld
+
+  test:
+    name: Test, Python ${{ matrix.python-version }}
+    runs-on:
+      labels: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+    steps:
+    # Checkout code and setup miniconda with test dependencies
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: latest
+        python-version: "${{ matrix.python-version }}"
+        channels: conda-forge
+        activate-environment: test-env
+        environment-file: etc/test-environment.yml
+        auto-activate-base: false
+    - name: Install testing dependencies
+      run: |
+        python -m pip install tox-gh-actions
+    - name: Test with tox
+      run: tox
