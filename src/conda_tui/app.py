@@ -1,5 +1,9 @@
+import argparse
+import sys
 from pathlib import Path
+from typing import Optional
 
+import conda.plugins
 from textual.app import App
 
 from conda_tui.screens import EnvironmentScreen
@@ -40,6 +44,22 @@ class CondaTUI(App):
         self.push_screen(screen)
 
 
-def run() -> None:
+def run(argv: Optional[list[str]] = None) -> None:
     """Run the application."""
-    CondaTUI().run()
+    argv = argv or sys.argv[1:]
+    parser = argparse.ArgumentParser("conda tui")
+    parser.add_argument("--no-dark", action="store_true", help="Disable dark mode")
+    args = parser.parse_args(argv)
+
+    app = CondaTUI()
+    app.dark = not args.no_dark
+    app.run()
+
+
+@conda.plugins.hookimpl
+def conda_subcommands():
+    yield conda.plugins.CondaSubcommand(
+        name="tui",
+        summary="A Terminal User Interface for conda",
+        action=run,
+    )
