@@ -1,0 +1,9 @@
+channels:
+- defaults
+- conda-forge
+dependencies:
+- conda
+- pip:
+  - tox
+  - tox-conda
+  - tox-gh-actions

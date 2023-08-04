@@ -1,0 +1,75 @@
+name: "[CI] conda-tui"
+
+on:
+  pull_request:
+    branches:
+    - main
+  push:
+    branches:
+    - main
+    tags: v[0-9]+.[0-9]+.[0-9]+*
+  merge_group:
+
+jobs:
+  build:
+    name: Build package
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout code and setup miniconda with build dependencies
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: latest
+        python-version: "3.10"
+        channels: conda-forge
+        activate-environment: build-env
+        environment-file: etc/build-environment.yml
+        auto-activate-base: false
+    # Build the package and copy the output into ./conda-bld
+    - name: conda build
+      shell: bash -l {0}
+      run: |
+        VERSION=`python -m setuptools_scm` conda build conda.recipe
+        mv $CONDA_PREFIX/conda-bld .
+    - name: Upload the build artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: package-${{ github.sha }}
+        path: conda-bld
+
+  test:
+    name: Test, Python ${{ matrix.python-version }}
+    runs-on:
+      labels: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11"]
+    steps:
+    # Checkout code and setup miniconda with test dependencies
+    - uses: actions/checkout@v3
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        miniconda-version: latest
+        python-version: "${{ matrix.python-version }}"
+        channels: conda-forge
+        activate-environment: test-env
+        environment-file: etc/test-environment.yml
+        auto-activate-base: false
+    # Run the tests in an isolated environment using tox
+    - name: Test with tox
+      shell: bash -l {0}
+      run: tox
+
+  # This check job runs to ensure all tests and builds  have passed, such that we can use it as a "wildcard"
+  # for branch protection to ensure all tests pass before a PR can be merged.
+  check:
+    name: Check all tests passed
+    if: always()
+    needs: [build, test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Decide whether all required jobs succeeded or failed
+      uses: re-actors/alls-green@release/v1
+      with:
+        jobs: ${{ toJSON(needs) }}

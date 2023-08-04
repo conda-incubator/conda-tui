@@ -24,6 +24,7 @@ requirements:
     - {{ dep.lower() }}
     {% endfor %}
   run:
+    - conda >=22.11.0
     - python {{ project['requires-python'] }}
     {% for dep in project['dependencies'] %}
     - {{ dep.lower() }}
