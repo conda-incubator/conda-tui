@@ -14,10 +14,8 @@ class PackageUpdateProgress(Static):
         self._bar = Progress()
 
     def on_mount(self) -> None:
-        self.set_interval(1 / 60, self.update_progress_bar)
-
-    def update_progress_bar(self) -> None:
-        self.update(self._bar)
+        self.set_interval(1 / 60, lambda: self.update(self._bar))
+        self.run_worker(self.update_package())
 
     async def update_package(self):
         # TODO: This is a mock of actual package update

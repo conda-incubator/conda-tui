@@ -109,11 +109,6 @@ class PackageUpdateScreen(Screen):
     def action_go_back(self):
         self.dismiss()
 
-    def on_mount(self):
-        """On mount, run the package update in the background"""
-        progress = self.query_one(PackageUpdateProgress)
-        self.run_worker(progress.update_package())
-
 
 class PackageDetailScreen(Screen):
     """A screen to display the details of a package."""
