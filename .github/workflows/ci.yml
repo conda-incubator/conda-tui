@@ -58,4 +58,5 @@ jobs:
         auto-activate-base: false
     # Run the tests in an isolated environment using tox
     - name: Test with tox
+      shell: bash -l {0}
       run: tox
