@@ -44,7 +44,7 @@ jobs:
         path: 'docs/_build/html'
 
   pages:
-    if: github.ref == 'refs/heads/main'
+#    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     needs: [docs]
 
