@@ -29,6 +29,12 @@ test:  ## Run all the unit tests
 tox:  ## Run tox to test in isolated environments
 	$(CONDA_RUN) tox
 
+docs:  ## Generate the HTML docs
+	$(MAKE) -C docs html
+
+docs-dev:  ## Generate the HTML docs in live mode for development
+	$(MAKE) -C docs live
+
 clean:  ## Clean up cache and temporary files
 	find . -name \*.py[cod] -delete
 	rm -rf .pytest_cache .mypy_cache .tox build dist

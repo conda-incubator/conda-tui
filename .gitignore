@@ -27,3 +27,8 @@ env/
 /.mypy_cache/
 /.pytest_cache/
 /.tox/
+
+# Generated documentation output
+/docs/_build/
+/docs/venv/
+/docs/source/api/
