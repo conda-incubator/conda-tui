@@ -3,7 +3,7 @@
 # To get started, run `make live`
 
 # Path to the documentation virtual environment
-CONDA_ENV_FILE = ./docs-environment.yml
+CONDA_ENV_FILE = ./environment.yml
 CONDA_ENV_DIR = ./env
 
 # You can set these variables from the command line, and also
