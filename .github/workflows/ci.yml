@@ -98,7 +98,7 @@ jobs:
       env:
         TOKEN: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
       run: |
-        [[ -z "${TOKEN}" ]] && echo "TOKEN is unset"; exit 1;
+        [[ -z "${TOKEN}" ]] && exit 1
         [[ "$GITHUB_REF" =~ ^refs/tags/v ]] || export LABEL="--label dev"
         anaconda --verbose \
           --token $TOKEN \
