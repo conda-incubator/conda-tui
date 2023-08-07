@@ -73,3 +73,37 @@ jobs:
       uses: re-actors/alls-green@release/v1
       with:
         jobs: ${{ toJSON(needs) }}
+
+  publish-conda-pkg-to-anaconda-dot-org:
+    name: Publish conda package to Anaconda.org
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'  # Only run on push to main branch
+    needs: [check]
+    steps:
+    - name: Retrieve the source code
+      uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3
+    - uses: conda-incubator/setup-miniconda@3b0f2504dd76ef23b6d31f291f4913fb60ab5ff3 # v2
+      with:
+        miniconda-version: latest
+        activate-environment: publish-env
+        environment-file: etc/publish-environment.yml
+        auto-activate-base: false
+    - name: Download the build artifacts
+      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      with:
+        name: package-${{ github.sha }}
+        path: ~/conda-bld
+    - name: publish
+      shell: bash -l {0}
+      env:
+        TOKEN: ${{ secrets.ANACONDA_ORG_UPLOAD_TOKEN }}
+      run: |
+        [[ -z "${TOKEN}" ]] && exit 1
+        [[ "$GITHUB_REF" =~ ^refs/tags/v ]] || export LABEL="--label dev"
+        anaconda --verbose \
+          --token $TOKEN \
+          upload \
+          --user mattkram \
+          $LABEL \
+          --force \
+          ~/conda-bld/noarch/conda-tui-*
