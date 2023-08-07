@@ -71,5 +71,4 @@ def conda_subcommands():
         name="tui",
         summary="A Terminal User Interface for conda",
         action=run,
-        # configure_parser=config_parser,
     )
