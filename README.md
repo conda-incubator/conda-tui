@@ -2,6 +2,34 @@
 
 ![logo](etc/logos/conda-tui-color-background.png)
 
+[!NOTE]
+> This is a project that was originally developed during [@anaconda] hackdays.
+> It is currently in its infancy, and we welcome any contributions or suggestions from the community!
+>
+> Due to its stage of development, it is recommended to try it out and provide feedback.
+
+`conda-tui` is a snake-chef that follows and creates recipes to deliver delicious homemade packages.
+
+`conda-tui` is also an experimental Text User Interface (TUI) for conda built with [Textual](https://github.com/Textualize/textual).
+It aims to provide a clean and easy interactive interface centered around common interactive use cases, wrapped around the conda CLI.
+
+# Installation
+
+1. Ensure you have `conda` or `miniconda` installed
+2. Install the package into a test environment:
+   * `conda create -n tui -c conda-forge -c mattkram/label/dev conda-tui conda`
+   * `conda activate tui`
+3. Run it! `conda tui`
+
+# Features
+
+[!NOTE]
+> This is very likely to change. Have an idea? Create an issue!
+
+* Display a list of all `conda` envuronments (`conda env list`)
+* Navigate to any environment to view all packages installed (`conda list`)
+* Display packages that can be updated (`conda update --all --dry-run`)
+
 # Dev setup
 
 1. Ensure you have `conda` or `miniconda` installed
