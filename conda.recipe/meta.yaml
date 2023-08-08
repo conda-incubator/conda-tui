@@ -39,4 +39,4 @@ about:
 #  home: {{ project['urls']['repository'] }}
   summary: {{ project['description'] }}
   license: {{ project['license']['text'] }}
-  license_file: LICENSE
+  license_file: ../LICENSE
