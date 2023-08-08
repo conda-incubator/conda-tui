@@ -1,4 +1,6 @@
 import json
+import tempfile
+from pathlib import Path
 from typing import Any
 from typing import Optional
 
@@ -11,33 +13,73 @@ from textual.widgets import DataTable
 from textual.widgets import Footer
 from textual.widgets import Log
 from textual.widgets import Static
+from textual.widgets._header import HeaderTitle
 
 from conda_tui.environment import Environment
+from conda_tui.environment import list_environments
 from conda_tui.package import Package
 from conda_tui.package import list_packages_for_environment
-from conda_tui.widgets import EnvironmentList
 from conda_tui.widgets import Header
 from conda_tui.widgets import Logo
 from conda_tui.widgets import PackageUpdateProgress
 from conda_tui.widgets.progress import ShellCommandProgress
 
+HOME_TEXT = """\
+Welcome to [cyan bold]conda-tui[/], your friendly helpful snake-chef.
+
+To see a list of your 'conda' environments, please press [cyan bold]E[/].
+
+"""
+
 
 class Screen(_Screen):
+    """A base screen class, used for wrapping a subclass with a header and footer."""
+
+    header_text: str = reactive("conda-tui")
+
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         yield Footer()
 
+    def watch_header_text(self, value) -> None:
+        header = self.query_one(HeaderTitle)
+        header.text = value
+
 
 class HomeScreen(Screen):
+    """The home screen, displaying some helpful welcome text and the conda logo."""
+
     def compose(self) -> ComposeResult:
         yield from super().compose()
         yield Logo(id="logo")
+        yield Static(HOME_TEXT, markup=True)
 
 
 class EnvironmentScreen(Screen):
+    """A screen displaying a list of all conda environments on the system."""
+
+    environments: list[Environment]
+
     def compose(self) -> ComposeResult:
         yield from super().compose()
-        yield EnvironmentList(id="environment-list")
+        table = DataTable()
+        table.cursor_type = "row"
+        table.add_columns("Name", "Path")
+        yield table
+
+    def on_mount(self) -> None:
+        self.environments = list_environments()
+        table = self.query_one(DataTable)
+        table.add_rows(
+            [(f"[bold green]{env.name}[/]", env.prefix) for env in self.environments]
+        )
+
+    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+        """When we select a specific item on the list view, open the package list screen and
+        set the environment reactive variable on that view."""
+        screen = self.app.get_screen("package_list")
+        screen.environment = self.environments[event.cursor_row]
+        self.app.push_screen(screen)
 
 
 class PackageListScreen(Screen):
@@ -57,18 +99,69 @@ class PackageListScreen(Screen):
         assert self.environment is not None, "Shouldn't be possible"
         table = DataTable()
         table.cursor_type = "row"
-        table.add_columns("Name", "Description", "Version", "Build", "Channel")
+        table.add_columns("Name", "Description", "", "Version", "Build", "Channel")
         self.packages = list_packages_for_environment(self.environment)
         for row_num, pkg in enumerate(self.packages):
+            # TODO: Figure out a more dynamic way to do this
+            description = pkg.description
+            if len(description) > 80:
+                description = description[: 80 - 3] + "..."
+
             table.add_row(
                 pkg.name,
-                pkg.description,
+                description,
                 pkg.status,
+                pkg.version,
                 pkg.build,
                 pkg.schannel,
                 key=pkg.name,
             )
         yield table
+
+    def on_screen_resume(self) -> None:
+        if self.environment.name:
+            self.header_text = f"conda-tui: packages in {self.environment.name}"
+        else:
+            self.header_text = f"conda-tui: packages in {self.environment.prefix}"
+
+        self.run_worker(self.refresh_package_statuses)
+
+    async def refresh_package_statuses(self):
+        """Call conda in the background to get update results, and update the statuses in the table."""
+        import asyncio
+        import subprocess
+
+        if self.environment.name:
+            env_args = ["-n", self.environment.name]
+        else:
+            env_args = ["-p", str(self.environment.prefix)]
+        command = ["conda", "update", *env_args, "--all", "--dry-run", "--json"]
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir, "tmp.json")
+            with tmp_path.open("w") as fp:
+                process = subprocess.Popen(command, stdout=fp, stderr=fp)
+                while process.poll() is None:
+                    await asyncio.sleep(0.1)
+
+            with tmp_path.open("r") as fp:
+                data = json.load(fp)
+                fetch_names = {
+                    pkg["name"]: pkg["version"]
+                    for pkg in data["actions"].get("FETCH", [])
+                }
+
+        table = self.query_one(DataTable)
+        for row_num, package in enumerate(self.packages):
+            if package.name in fetch_names:
+                package.update_available = True
+                table.update_cell_at(
+                    (row_num, 3),
+                    f"{package.version} \N{RIGHTWARDS ARROW} {fetch_names[package.name]}",
+                )
+            else:
+                package.update_available = False
+            table.update_cell_at((row_num, 2), package.status)
 
     def action_go_back(self) -> None:
         self.dismiss()

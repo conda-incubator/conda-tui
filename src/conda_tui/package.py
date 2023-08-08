@@ -1,9 +1,9 @@
 import json
-import random
 from functools import cache
 from functools import cached_property
 from pathlib import Path
 from typing import Any
+from typing import Optional
 
 from conda.core.prefix_data import PrefixData
 from rich.text import Text
@@ -16,14 +16,14 @@ class Package:
 
     def __init__(self, record: PrefixData):
         self._record = record
-        # TODO: This should be replaced with a call to the conda repo
-        self._update_available = random.random() > 0.8
+        self._update_available = None
 
     def __getattr__(self, item: str) -> Any:
         return getattr(self._record, item)
 
     @property
-    def update_available(self) -> bool:
+    def update_available(self) -> Optional[bool]:
+        """True if update is available. If None, update status is unknown."""
         return self._update_available
 
     @update_available.setter
@@ -32,14 +32,17 @@ class Package:
 
     @property
     def status(self) -> Text:
-        return self._get_update_status_icon(self.update_available) + " " + self.version
+        return self._get_update_status_icon(self.update_available)
 
     @staticmethod
     @cache
     def _get_update_status_icon(update_available: bool) -> Text:
-        if update_available:
+        if update_available is None:
+            return Text.from_markup(" ")
+        elif update_available:
             return Text.from_markup("[bold #DB6015]\N{UPWARDS ARROW}[/]")
-        return Text.from_markup("[bold #43b049]\N{HEAVY CHECK MARK}[/]")
+        else:
+            return Text.from_markup("[bold #43b049]\N{HEAVY CHECK MARK}[/]")
 
     @cached_property
     def description(self) -> str:
