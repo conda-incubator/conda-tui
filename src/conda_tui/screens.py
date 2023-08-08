@@ -1,4 +1,6 @@
 import json
+import tempfile
+from pathlib import Path
 from typing import Any
 from typing import Optional
 
@@ -121,6 +123,38 @@ class PackageListScreen(Screen):
             self.header_text = f"conda-tui: packages in {self.environment.name}"
         else:
             self.header_text = f"conda-tui: packages in {self.environment.prefix}"
+
+        self.run_worker(self.refresh_package_statuses)
+
+    async def refresh_package_statuses(self):
+        """Call conda in the background to get update results, and update the statuses in the table."""
+        import asyncio
+        import subprocess
+
+        if self.environment.name:
+            env_args = ["-n", self.environment.name]
+        else:
+            env_args = ["-p", str(self.environment.prefix)]
+        command = ["conda", "update", *env_args, "--all", "--dry-run", "--json"]
+
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir, "tmp.json")
+            with tmp_path.open("w") as fp:
+                process = subprocess.Popen(command, stdout=fp, stderr=fp)
+                while process.poll() is None:
+                    await asyncio.sleep(0.1)
+
+            with tmp_path.open("r") as fp:
+                data = json.load(fp)
+                fetch_names = [pkg["name"] for pkg in data["actions"].get("FETCH", [])]
+
+        table = self.query_one(DataTable)
+        for row_num, package in enumerate(self.packages):
+            if package.name in fetch_names:
+                package.update_available = True
+            else:
+                package.update_available = False
+            table.update_cell_at((row_num, 2), package.status)
 
     def action_go_back(self) -> None:
         self.dismiss()
