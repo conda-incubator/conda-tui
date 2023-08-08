@@ -143,11 +143,15 @@ class PackageListScreen(Screen):
                     await asyncio.sleep(0.1)
 
             with tmp_path.open("r") as fp:
-                data = json.load(fp)
-                fetch_names = {
-                    pkg["name"]: pkg["version"]
-                    for pkg in data["actions"].get("FETCH", [])
-                }
+                try:
+                    data = json.load(fp)
+                except json.JSONDecodeError:
+                    data = {}
+
+        fetch_names = {
+            pkg["name"]: pkg["version"]
+            for pkg in data.get("actions", {}).get("FETCH", [])
+        }
 
         table = self.query_one(DataTable)
         for row_num, package in enumerate(self.packages):
