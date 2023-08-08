@@ -25,7 +25,9 @@ class Logo(Static):
         with LOGO_PATH.open("r") as fp:
             lines = fp.read().split("\n")
 
-        max_line_length = max(len(line) for line in lines)
+        # The line length is hard-coded for the specific logo file we have stored
+        # We do this because we are lazy, and because the C is hard to center :)
+        max_line_length = 114
         blank = "\N{ZERO WIDTH SPACE}"  # A blank non-whitespace character so Rich can center the logo
         padded_lines = [f"{blank}{line:{max_line_length}s}{blank}" for line in lines]
 
