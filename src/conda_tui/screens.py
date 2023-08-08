@@ -11,6 +11,7 @@ from textual.widgets import DataTable
 from textual.widgets import Footer
 from textual.widgets import Log
 from textual.widgets import Static
+from textual.widgets._header import HeaderTitle
 
 from conda_tui.environment import Environment
 from conda_tui.environment import list_environments
@@ -32,9 +33,15 @@ To see a list of your 'conda' environments, please press [cyan bold]E[/].
 class Screen(_Screen):
     """A base screen class, used for wrapping a subclass with a header and footer."""
 
+    header_text: str = reactive("conda-tui")
+
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         yield Footer()
+
+    def watch_header_text(self, value) -> None:
+        header = self.query_one(HeaderTitle)
+        header.text = value
 
 
 class HomeScreen(Screen):
@@ -102,6 +109,12 @@ class PackageListScreen(Screen):
                 key=pkg.name,
             )
         yield table
+
+    def on_screen_resume(self) -> None:
+        if self.environment.name:
+            self.header_text = f"conda-tui: packages in {self.environment.name}"
+        else:
+            self.header_text = f"conda-tui: packages in {self.environment.prefix}"
 
     def action_go_back(self) -> None:
         self.dismiss()
