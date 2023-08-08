@@ -21,20 +21,34 @@ from conda_tui.widgets import Logo
 from conda_tui.widgets import PackageUpdateProgress
 from conda_tui.widgets.progress import ShellCommandProgress
 
+HOME_TEXT = """\
+Welcome to [cyan bold]conda-tui[/], your friendly helpful snake-chef.
+
+To see a list of your 'conda' environments, please press [cyan bold]E[/].
+
+"""
+
 
 class Screen(_Screen):
+    """A base screen class, used for wrapping a subclass with a header and footer."""
+
     def compose(self) -> ComposeResult:
         yield Header(show_clock=True)
         yield Footer()
 
 
 class HomeScreen(Screen):
+    """The home screen, displaying some helpful welcome text and the conda logo."""
+
     def compose(self) -> ComposeResult:
         yield from super().compose()
         yield Logo(id="logo")
+        yield Static(HOME_TEXT, markup=True)
 
 
 class EnvironmentScreen(Screen):
+    """A screen displaying a list of all conda environments on the system."""
+
     def compose(self) -> ComposeResult:
         yield from super().compose()
         yield EnvironmentList(id="environment-list")
