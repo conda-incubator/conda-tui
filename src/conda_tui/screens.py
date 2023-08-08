@@ -13,7 +13,6 @@ from textual.widgets import DataTable
 from textual.widgets import Footer
 from textual.widgets import Log
 from textual.widgets import Static
-from textual.widgets._header import HeaderTitle
 
 from conda_tui.environment import Environment
 from conda_tui.environment import list_environments
@@ -42,8 +41,7 @@ class Screen(_Screen):
         yield Footer()
 
     def watch_header_text(self, value) -> None:
-        header = self.query_one(HeaderTitle)
-        header.text = value
+        self.app.title = value
 
 
 class HomeScreen(Screen):
