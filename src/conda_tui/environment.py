@@ -20,7 +20,9 @@ class Environment:
     @cache
     def _get_relative_path(prefix: Path) -> Path:
         user_home = Path("~")
-        return user_home / prefix.relative_to(user_home.expanduser())
+        if prefix.is_relative_to(user_home.expanduser()):
+            return user_home / prefix.relative_to(user_home.expanduser())
+        return prefix
 
     @property
     def name(self) -> str:
