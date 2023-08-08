@@ -146,12 +146,19 @@ class PackageListScreen(Screen):
 
             with tmp_path.open("r") as fp:
                 data = json.load(fp)
-                fetch_names = [pkg["name"] for pkg in data["actions"].get("FETCH", [])]
+                fetch_names = {
+                    pkg["name"]: pkg["version"]
+                    for pkg in data["actions"].get("FETCH", [])
+                }
 
         table = self.query_one(DataTable)
         for row_num, package in enumerate(self.packages):
             if package.name in fetch_names:
                 package.update_available = True
+                table.update_cell_at(
+                    (row_num, 3),
+                    f"{package.version} \N{RIGHTWARDS ARROW} {fetch_names[package.name]}",
+                )
             else:
                 package.update_available = False
             table.update_cell_at((row_num, 2), package.status)
