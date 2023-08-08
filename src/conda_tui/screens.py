@@ -13,9 +13,9 @@ from textual.widgets import Log
 from textual.widgets import Static
 
 from conda_tui.environment import Environment
+from conda_tui.environment import list_environments
 from conda_tui.package import Package
 from conda_tui.package import list_packages_for_environment
-from conda_tui.widgets import EnvironmentList
 from conda_tui.widgets import Header
 from conda_tui.widgets import Logo
 from conda_tui.widgets import PackageUpdateProgress
@@ -49,9 +49,28 @@ class HomeScreen(Screen):
 class EnvironmentScreen(Screen):
     """A screen displaying a list of all conda environments on the system."""
 
+    environments: list[Environment]
+
     def compose(self) -> ComposeResult:
         yield from super().compose()
-        yield EnvironmentList(id="environment-list")
+        table = DataTable()
+        table.cursor_type = "row"
+        table.add_columns("Name", "Path")
+        yield table
+
+    def on_mount(self) -> None:
+        self.environments = list_environments()
+        table = self.query_one(DataTable)
+        table.add_rows(
+            [(f"[bold green]{env.name}[/]", env.prefix) for env in self.environments]
+        )
+
+    def on_data_table_row_selected(self, event: DataTable.RowSelected) -> None:
+        """When we select a specific item on the list view, open the package list screen and
+        set the environment reactive variable on that view."""
+        screen = self.app.get_screen("package_list")
+        screen.environment = self.environments[event.cursor_row]
+        self.app.push_screen(screen)
 
 
 class PackageListScreen(Screen):
