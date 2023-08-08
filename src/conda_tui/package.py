@@ -32,7 +32,7 @@ class Package:
 
     @property
     def status(self) -> Text:
-        return self._get_update_status_icon(self.update_available) + " " + self.version
+        return self._get_update_status_icon(self.update_available)
 
     @staticmethod
     @cache

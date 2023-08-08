@@ -97,13 +97,19 @@ class PackageListScreen(Screen):
         assert self.environment is not None, "Shouldn't be possible"
         table = DataTable()
         table.cursor_type = "row"
-        table.add_columns("Name", "Description", "Version", "Build", "Channel")
+        table.add_columns("Name", "Description", "", "Version", "Build", "Channel")
         self.packages = list_packages_for_environment(self.environment)
         for row_num, pkg in enumerate(self.packages):
+            # TODO: Figure out a more dynamic way to do this
+            description = pkg.description
+            if len(description) > 80:
+                description = description[: 80 - 3] + "..."
+
             table.add_row(
                 pkg.name,
-                pkg.description,
+                description,
                 pkg.status,
+                pkg.version,
                 pkg.build,
                 pkg.schannel,
                 key=pkg.name,
