@@ -1,4 +1,6 @@
+import asyncio
 import json
+import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -126,8 +128,6 @@ class PackageListScreen(Screen):
 
     async def refresh_package_statuses(self):
         """Call conda in the background to get update results, and update the statuses in the table."""
-        import asyncio
-        import subprocess
 
         if self.environment.name:
             env_args = ["-n", self.environment.name]
