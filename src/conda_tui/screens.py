@@ -1,4 +1,6 @@
+import asyncio
 import json
+import subprocess
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -13,7 +15,6 @@ from textual.widgets import DataTable
 from textual.widgets import Footer
 from textual.widgets import Log
 from textual.widgets import Static
-from textual.widgets._header import HeaderTitle
 
 from conda_tui.environment import Environment
 from conda_tui.environment import list_environments
@@ -42,8 +43,7 @@ class Screen(_Screen):
         yield Footer()
 
     def watch_header_text(self, value) -> None:
-        header = self.query_one(HeaderTitle)
-        header.text = value
+        self.app.title = value
 
 
 class HomeScreen(Screen):
@@ -128,8 +128,6 @@ class PackageListScreen(Screen):
 
     async def refresh_package_statuses(self):
         """Call conda in the background to get update results, and update the statuses in the table."""
-        import asyncio
-        import subprocess
 
         if self.environment.name:
             env_args = ["-n", self.environment.name]
@@ -145,11 +143,15 @@ class PackageListScreen(Screen):
                     await asyncio.sleep(0.1)
 
             with tmp_path.open("r") as fp:
-                data = json.load(fp)
-                fetch_names = {
-                    pkg["name"]: pkg["version"]
-                    for pkg in data["actions"].get("FETCH", [])
-                }
+                try:
+                    data = json.load(fp)
+                except json.JSONDecodeError:
+                    data = {}
+
+        fetch_names = {
+            pkg["name"]: pkg["version"]
+            for pkg in data.get("actions", {}).get("FETCH", [])
+        }
 
         table = self.query_one(DataTable)
         for row_num, package in enumerate(self.packages):
