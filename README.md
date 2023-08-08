@@ -2,8 +2,7 @@
 
 ![logo](etc/logos/conda-tui-color-background.png)
 
-[!NOTE]
-> This is a project that was originally developed during [@anaconda] hackdays.
+> This is a project that was originally developed during [@anaconda](https://github.com/anaconda) hackdays.
 > It is currently in its infancy, and we welcome any contributions or suggestions from the community!
 >
 > Due to its stage of development, it is recommended to try it out and provide feedback.
@@ -11,7 +10,9 @@
 `conda-tui` is a snake-chef that follows and creates recipes to deliver delicious homemade packages.
 
 `conda-tui` is also an experimental Text User Interface (TUI) for conda built with [Textual](https://github.com/Textualize/textual).
-It aims to provide a clean and easy interactive interface centered around common interactive use cases, wrapped around the conda CLI.
+It aims to provide a clean and easy interface centered around common interactive use cases, wrapped around the conda CLI.
+
+<img width="1194" alt="image" src="https://github.com/anaconda-hackdays/conda-tui/assets/11037737/3c4d273c-bb0e-4c0b-bf9b-34f816478760">
 
 # Installation
 
@@ -23,12 +24,14 @@ It aims to provide a clean and easy interactive interface centered around common
 
 # Features
 
-[!NOTE]
 > This is very likely to change. Have an idea? Create an issue!
 
-* Display a list of all `conda` envuronments (`conda env list`)
+* Display a list of all `conda` environments (`conda env list`)
 * Navigate to any environment to view all packages installed (`conda list`)
 * Display packages that can be updated (`conda update --all --dry-run`)
+  
+  <img width="858" alt="image" src="https://github.com/anaconda-hackdays/conda-tui/assets/11037737/d3c133c8-c074-4a24-a5f1-bbda271f028c">
+  <img width="1727" alt="image" src="https://github.com/anaconda-hackdays/conda-tui/assets/11037737/1314947f-de3a-461e-982a-6e01b49fe456">
 
 # Dev setup
 
