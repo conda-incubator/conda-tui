@@ -42,7 +42,7 @@ class Screen(_Screen):
         yield Header(show_clock=True)
         yield Footer()
 
-    def on_screen_resume(self):
+    def on_mount(self):
         header_icon = self.query_one("HeaderIcon")
         header_icon.icon = "🐍"
 
