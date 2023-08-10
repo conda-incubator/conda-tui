@@ -29,7 +29,7 @@ It aims to provide a clean and easy interface centered around common interactive
 * Display a list of all `conda` environments (`conda env list`)
 * Navigate to any environment to view all packages installed (`conda list`)
 * Display packages that can be updated (`conda update --all --dry-run`)
-  
+
   <img width="858" alt="image" src="https://github.com/anaconda-hackdays/conda-tui/assets/11037737/d3c133c8-c074-4a24-a5f1-bbda271f028c">
   <img width="1727" alt="image" src="https://github.com/anaconda-hackdays/conda-tui/assets/11037737/1314947f-de3a-461e-982a-6e01b49fe456">
 
