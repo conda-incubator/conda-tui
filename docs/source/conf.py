@@ -1,4 +1,5 @@
 """Documentation configuration for `conda-tui`."""
+
 from __future__ import annotations
 
 from conda_tui import __version__
