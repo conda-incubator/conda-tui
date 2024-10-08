@@ -163,7 +163,7 @@ class PackageListScreen(Screen):
                 package.update_available = True
                 table.update_cell_at(
                     (row_num, 3),
-                    f"{package.version} \N{RIGHTWARDS ARROW} {fetch_names[package.name]}",
+                    f"{package.version} \N{{RIGHTWARDS ARROW}} {fetch_names[package.name]}",
                 )
             else:
                 package.update_available = False
