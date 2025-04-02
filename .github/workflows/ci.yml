@@ -32,7 +32,7 @@ jobs:
         VERSION=`python -m setuptools_scm` conda build conda.recipe
         mv $CONDA_PREFIX/conda-bld .
     - name: Upload the build artifact
-      uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce # v3
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
       with:
         name: package-${{ github.sha }}
         path: conda-bld
@@ -89,7 +89,7 @@ jobs:
         environment-file: etc/publish-environment.yml
         auto-activate-base: false
     - name: Download the build artifacts
-      uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      uses: actions/download-artifact@95815c38cf2ff2164869cbab79da8d1f422bc89e # v4.2.1
       with:
         name: package-${{ github.sha }}
         path: ~/conda-bld
